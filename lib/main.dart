@@ -55,7 +55,7 @@ class _MyHomePageState extends State<MyHomePage> {
             }
             if (result.data == null) {
               return const Center(
-                child: Text("No users found!"),
+                child: Text("Data couldn't be loaded"),
               );
             }
             final users = result.data!['users'];
