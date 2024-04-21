@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
+import 'credentials.dart' as credentials;
 
 ValueNotifier<GraphQLClient> getClient() {
-  final HttpLink httpLink =
-      HttpLink("https://27777b3j-4000.euw.devtunnels.ms/api/graphql");
+  final HttpLink httpLink = HttpLink(credentials.getApiEndpoint());
 
   final AuthLink authLink =
-      AuthLink(getToken: () async => 'Basic YWRtaW46YWRtaW4=');
+      AuthLink(getToken: () async => 'Basic ${credentials.getApiKey()}');
 
   final Link link = authLink.concat(httpLink);
 

@@ -1,8 +1,16 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'graphql_client.dart' as graphql_client;
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-void main() {
+Future main() async {
+  if (kReleaseMode) {
+    await dotenv.load(fileName: '.env');
+  } else {
+    await dotenv.load(fileName: '.env.development');
+  }
+
   runApp(const MyApp());
 }
 
