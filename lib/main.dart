@@ -4,10 +4,14 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 import 'graphql_client.dart' as graphql_client;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
+String debug = "NULL";
+
 Future main() async {
   if (kReleaseMode) {
+    debug = "RELEASE";
     await dotenv.load(fileName: '.env');
   } else {
+    debug = "LOCAL";
     await dotenv.load(fileName: '.env.development');
   }
 
@@ -45,6 +49,13 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: SizedBox(
+          width: double.infinity,
+          child: Center(child: Text("Development Mode is $debug")),
+        ),
+        centerTitle: true,
+      ),
       body: Query(
           options: QueryOptions(document: gql(graphql_client.getUsersQuery())),
           builder: (result, {fetchMore, refetch}) {
@@ -54,8 +65,8 @@ class _MyHomePageState extends State<MyHomePage> {
               );
             }
             if (result.data == null) {
-              return const Center(
-                child: Text("Data couldn't be loaded"),
+              return Center(
+                child: Text(result.toString()),
               );
             }
             final users = result.data!['users'];
