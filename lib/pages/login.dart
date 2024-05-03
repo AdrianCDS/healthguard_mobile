@@ -129,9 +129,8 @@ class Login extends StatelessWidget {
                     ),
                     onPressed: () {
                       if (formKey.currentState!.validate()) {
-                        // Process data.
+                        Navigator.pushNamed(context, '/dashboard');
                       }
-                      ;
                     },
                   ),
                 ),

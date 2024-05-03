@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:healthguard_mobile/pages/dashboard.dart';
 import 'package:healthguard_mobile/pages/homepage.dart';
 import 'package:healthguard_mobile/pages/login.dart';
 import 'package:healthguard_mobile/pages/register.dart';
@@ -18,6 +19,7 @@ class MyApp extends StatelessWidget {
       routes: {
         '/register': (context) => const Register(),
         '/login': (context) => const Login(),
+        '/dashboard': (context) => const Dashboard(),
       },
     );
   }
