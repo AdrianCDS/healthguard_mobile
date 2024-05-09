@@ -78,3 +78,172 @@ warning: in the working copy of 'linux/flutter/generated_plugins.cmake', LF will
 [32m+[m[32m                    ),[m
 [32m+[m[32m                  ],[m
 [32m+[m[32m                ),[m
+[32m+[m[32m              ),[m
+             ),[m
+[31m-            child: const Text([m
+[31m-              "Home",[m
+[31m-              style: TextStyle(color: Colors.white),[m
+[32m+[m[32m            Row([m
+[32m+[m[32m              children: [[m
+[32m+[m[32m                const SizedBox([m
+[32m+[m[32m                  width: 12,[m
+[32m+[m[32m                ),[m
+[32m+[m[32m                Container([m
+[32m+[m[32m                  // Pulse[m
+[32m+[m[32m                  padding: const EdgeInsets.all(15),[m
+[32m+[m[32m                  child: const Text([m
+[32m+[m[32m                    'Pulse',[m
+[32m+[m[32m                    style: TextStyle([m
+[32m+[m[32m                      fontWeight: FontWeight.bold,[m
+[32m+[m[32m                      fontSize: 20,[m
+[32m+[m[32m                    ),[m
+[32m+[m[32m                  ),[m
+[32m+[m[32m                ),[m
+[32m+[m[32m                const SizedBox([m
+[32m+[m[32m                  width: 210,[m
+[32m+[m[32m                ),[m
+[32m+[m[32m                Container([m
+[32m+[m[32m                  height: 25,[m
+[32m+[m[32m                  width: 80,[m
+[32m+[m[32m                  decoration: BoxDecoration([m
+[32m+[m[32m                    color: Color.fromARGB(255, 62, 130, 238),[m
+[32m+[m[32m                    borderRadius: BorderRadius.circular(20),[m
+[32m+[m[32m                  ),[m
+[32m+[m[32m                  child: const Center([m
+[32m+[m[32m                    child: Text([m
+[32m+[m[32m                    'Today',[m
+[32m+[m[32m                    style: TextStyle([m
+[32m+[m[32m                      fontSize: 14,[m
+[32m+[m[32m                      color: Colors.white,[m
+[32m+[m[32m                    ),[m
+[32m+[m[32m                  ),[m
+[32m+[m[32m                  )[m
+[32m+[m[32m                ),[m
+[32m+[m[32m              ],[m
+             ),[m
+[31m-            onPressed: () {[m
+[31m-              Navigator.pushNamed(context, '/');[m
+[31m-            },[m
+[31m-          ),[m
+[31m-        ],[m
+[31m-      ),[m
+[31m-    );[m
+[32m+[m[32m          ],[m
+[32m+[m[32m        ));[m
+   }[m
+ }[m
+[1mdiff --git a/lib/pages/homepage.dart b/lib/pages/homepage.dart[m
+[1mindex 299c60f..3b2c21b 100644[m
+[1m--- a/lib/pages/homepage.dart[m
+[1m+++ b/lib/pages/homepage.dart[m
+[36m@@ -35,7 +35,7 @@[m [mclass Homepage extends StatelessWidget {[m
+                 width: double.infinity,[m
+                 child: ElevatedButton([m
+                   style: ElevatedButton.styleFrom([m
+[31m-                    backgroundColor: const Color.fromARGB(255, 7, 104, 250),[m
+[32m+[m[32m                    backgroundColor: Color.fromARGB(255, 7, 104, 250),[m
+                     elevation: 2,[m
+                   ),[m
+                   child: const Text([m
+[1mdiff --git a/pubspec.lock b/pubspec.lock[m
+[1mindex defb379..60ce713 100644[m
+[1m--- a/pubspec.lock[m
+[1m+++ b/pubspec.lock[m
+[36m@@ -256,6 +256,14 @@[m [mpackages:[m
+       url: "https://pub.dev"[m
+     source: hosted[m
+     version: "4.0.2"[m
+[32m+[m[32m  intl:[m
+[32m+[m[32m    dependency: transitive[m
+[32m+[m[32m    description:[m
+[32m+[m[32m      name: intl[m
+[32m+[m[32m      sha256: d6f56758b7d3014a48af9701c085700aac781a92a87a62b1333b46d8879661cf[m
+[32m+[m[32m      url: "https://pub.dev"[m
+[32m+[m[32m    source: hosted[m
+[32m+[m[32m    version: "0.19.0"[m
+   js:[m
+     dependency: transitive[m
+     description:[m
+[36m@@ -432,6 +440,14 @@[m [mpackages:[m
+       url: "https://pub.dev"[m
+     source: hosted[m
+     version: "0.27.7"[m
+[32m+[m[32m  simple_gesture_detector:[m
+[32m+[m[32m    dependency: transitive[m
+[32m+[m[32m    description:[m
+[32m+[m[32m      name: simple_gesture_detector[m
+[32m+[m[32m      sha256: ba2cd5af24ff20a0b8d609cec3f40e5b0744d2a71804a2616ae086b9c19d19a3[m
+[32m+[m[32m      url: "https://pub.dev"[m
+[32m+[m[32m    source: hosted[m
+[32m+[m[32m    version: "0.2.1"[m
+   sky_engine:[m
+     dependency: transitive[m
+     description: flutter[m
+[36m@@ -469,6 +485,38 @@[m [mpackages:[m
+       url: "https://pub.dev"[m
+     source: hosted[m
+     version: "1.2.0"[m
+[32m+[m[32m  syncfusion_flutter_calendar:[m
+[32m+[m[32m    dependency: "direct main"[m
+[32m+[m[32m    description:[m
+[32m+[m[32m      name: syncfusion_flutter_calendar[m
+[32m+[m[32m      sha256: "286ff7a451cebc8f21cc0fc7d0032040957851a2535616178bf54e8e488a833f"[m
+[32m+[m[32m      url: "https://pub.dev"[m
+[32m+[m[32m    source: hosted[m
+[32m+[m[32m    version: "25.2.3"[m
+[32m+[m[32m  syncfusion_flutter_core:[m
+[32m+[m[32m    dependency: "direct main"[m
+[32m+[m[32m    description:[m
+[32m+[m[32m      name: syncfusion_flutter_core[m
+[32m+[m[32m      sha256: "6c534bb282e1429ac082354ace1b7c6d4496a258e62c948b7ca2b52acca8a514"[m
+[32m+[m[32m      url: "https://pub.dev"[m
+[32m+[m[32m    source: hosted[m
+[32m+[m[32m    version: "25.2.3"[m
+[32m+[m[32m  syncfusion_flutter_datepicker:[m
+[32m+[m[32m    dependency: transitive[m
+[32m+[m[32m    description:[m
+[32m+[m[32m      name: syncfusion_flutter_datepicker[m
+[32m+[m[32m      sha256: "50c8d4b5029313a1774f85a71a49319a840dc8fb12096ae041b20da4fbb9e58a"[m
+[32m+[m[32m      url: "https://pub.dev"[m
+[32m+[m[32m    source: hosted[m
+[32m+[m[32m    version: "25.2.3"[m
+[32m+[m[32m  table_calendar:[m
+[32m+[m[32m    dependency: "direct main"[m
+[32m+[m[32m    description:[m
+[32m+[m[32m      name: table_calendar[m
+[32m+[m[32m      sha256: b759eb6caa88dda8e51c70ee43c19d1682f8244458f84cced9138ee35b2ce416[m
+[32m+[m[32m      url: "https://pub.dev"[m
+[32m+[m[32m    source: hosted[m
+[32m+[m[32m    version: "3.1.1"[m
+   term_glyph:[m
+     dependency: transitive[m
+     description:[m
+[36m@@ -485,6 +533,14 @@[m [mpackages:[m
+       url: "https://pub.dev"[m
+     source: hosted[m
+     version: "0.6.1"[m
+[32m+[m[32m  timezone:[m
+[32m+[m[32m    dependency: transitive[m
+[32m+[m[32m    description:[m
+[32m+[m[32m      name: timezone[m
+[32m+[m[32m      sha256: "1cfd8ddc2d1cfd836bc93e67b9be88c3adaeca6f40a00ca999104c30693cdca0"[m
+[32m+[m[32m      url: "https://pub.dev"[m
+[32m+[m[32m    source: hosted[m
+[32m+[m[32m    version: "0.9.2"[m
+   typed_data:[m
+     dependency: transitive[m
+     description:[m
+[1mdiff --git a/pubspec.yaml b/pubspec.yaml[m
+[1mindex dfb6860..c3d96ab 100644[m
+[1m--- a/pubspec.yaml[m
+[1m+++ b/pubspec.yaml[m
+[36m@@ -37,6 +37,9 @@[m [mdependencies:[m
+   graphql_flutter: ^5.1.2[m
+   flutter_dotenv: ^5.1.0[m
+   heroicons: ^0.9.0[m
+[32m+[m[32m  syncfusion_flutter_calendar: ^25.2.3[m
+[32m+[m[32m  syncfusion_flutter_core: ^25.2.3[m
+[32m+[m[32m  table_calendar: ^3.1.1[m
+ [m
+ dev_dependencies:[m
+   flutter_test:[m
