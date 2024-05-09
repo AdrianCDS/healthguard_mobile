@@ -1,0 +1,80 @@
+warning: in the working copy of 'linux/flutter/generated_plugin_registrant.cc', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'linux/flutter/generated_plugin_registrant.h', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'linux/flutter/generated_plugins.cmake', LF will be replaced by CRLF the next time Git touches it
+[1mdiff --git a/lib/components/dashboard_home.dart b/lib/components/dashboard_home.dart[m
+[1mindex 13b543d..706bc22 100644[m
+[1m--- a/lib/components/dashboard_home.dart[m
+[1m+++ b/lib/components/dashboard_home.dart[m
+[36m@@ -1,35 +1,101 @@[m
+ import 'package:flutter/material.dart';[m
+[32m+[m[32m//import 'package:syncfusion_flutter_calendar/calendar.dart';[m
+[32m+[m[32m//import 'package:syncfusion_flutter_core/theme.dart';[m
+[32m+[m[32mimport 'package:table_calendar/table_calendar.dart';[m
+ [m
+[31m-class DashboardHome extends StatelessWidget {[m
+[32m+[m[32mclass DashboardHome extends StatefulWidget {[m
+   const DashboardHome({super.key});[m
+ [m
+[32m+[m[32m  @override[m
+[32m+[m[32m  State<DashboardHome> createState() => _DashboardHomeState();[m
+[32m+[m[32m}[m
+[32m+[m
+[32m+[m[32mclass _DashboardHomeState extends State<DashboardHome> {[m
+[32m+[m[32m  DateTime today = DateTime.now();[m
+   @override[m
+   Widget build(BuildContext context) {[m
+[31m-    return Container([m
+[31m-      width: double.infinity,[m
+[31m-      height: double.infinity,[m
+[31m-      decoration: BoxDecoration([m
+[31m-        color: Colors.purple[200],[m
+[31m-      ),[m
+[31m-      child: Column([m
+[31m-        mainAxisAlignment: MainAxisAlignment.center,[m
+[31m-        crossAxisAlignment: CrossAxisAlignment.center,[m
+[31m-        children: <Widget>[[m
+[31m-          ElevatedButton([m
+[31m-            style: ElevatedButton.styleFrom([m
+[31m-              backgroundColor: const Color.fromARGB(255, 7, 104, 250),[m
+[31m-              elevation: 2,[m
+[32m+[m[32m    return Scaffold([m
+[32m+[m[32m        backgroundColor: Colors.white,[m
+[32m+[m[32m        body: Column([m
+[32m+[m[32m          crossAxisAlignment: CrossAxisAlignment.stretch,[m
+[32m+[m[32m          children: [[m
+[32m+[m[32m            Container([m
+[32m+[m[32m              height: 290,[m
+[32m+[m[32m              width: MediaQuery.of(context).size.width,[m
+[32m+[m[32m              decoration: const BoxDecoration([m
+[32m+[m[32m                color: Color.fromARGB(255, 62, 130, 238),[m
+[32m+[m[32m                borderRadius: BorderRadius.only([m
+[32m+[m[32m                  bottomLeft: Radius.circular(20.0),[m
+[32m+[m[32m                  bottomRight: Radius.circular(20.0),[m
+[32m+[m[32m                ),[m
+[32m+[m[32m              ),[m
+[32m+[m[32m              child: DefaultTextStyle([m
+[32m+[m[32m                style: TextStyle(color: Colors.white),[m
+[32m+[m[32m                child: Column([m
+[32m+[m[32m                  children: [[m
+[32m+[m[32m                    Container([m
+[32m+[m[32m                      padding: EdgeInsets.all(15),[m
+[32m+[m[32m                      height: 290,[m
+[32m+[m[32m                      child: TableCalendar([m
+[32m+[m[32m                        rowHeight: 30,[m
+[32m+[m[32m                        calendarStyle:  CalendarStyle([m
+[32m+[m[32m                          holidayTextStyle: TextStyle(color: Colors.white),[m
+[32m+[m[32m                          weekendTextStyle: TextStyle(color: Colors.white),[m
+[32m+[m[32m                          weekNumberTextStyle: TextStyle(color: Colors.white),[m
+[32m+[m[32m                          defaultTextStyle: TextStyle(color: Colors.white),[m
+[32m+[m[32m                          selectedTextStyle: TextStyle(color: Colors.white30),[m
+[32m+[m[32m                          todayTextStyle: TextStyle(backgroundColor: Colors.blue[100]),[m
+[32m+[m[41m                          [m
+[32m+[m[32m                        ),[m
+[32m+[m[32m                        focusedDay: today,[m
+[32m+[m[32m                        firstDay: DateTime.utc(2010, 1, 1),[m
+[32m+[m[32m                        lastDay: DateTime.utc(2050, 12, 31),[m
+[32m+[m[41m                        [m
+[32m+[m[32m                      ),[m
+[32m+[m[32m                    ),[m
+[32m+[m[32m                  ],[m
+[32m+[m[32m                ),[m

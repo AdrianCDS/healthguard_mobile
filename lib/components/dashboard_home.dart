@@ -1,35 +1,101 @@
 import 'package:flutter/material.dart';
+//import 'package:syncfusion_flutter_calendar/calendar.dart';
+//import 'package:syncfusion_flutter_core/theme.dart';
+import 'package:table_calendar/table_calendar.dart';
 
-class DashboardHome extends StatelessWidget {
+class DashboardHome extends StatefulWidget {
   const DashboardHome({super.key});
 
   @override
+  State<DashboardHome> createState() => _DashboardHomeState();
+}
+
+class _DashboardHomeState extends State<DashboardHome> {
+  DateTime today = DateTime.now();
+  @override
   Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      height: double.infinity,
-      decoration: BoxDecoration(
-        color: Colors.purple[200],
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: <Widget>[
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: const Color.fromARGB(255, 7, 104, 250),
-              elevation: 2,
+    return Scaffold(
+        backgroundColor: Colors.white,
+        body: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Container(
+              height: 290,
+              width: MediaQuery.of(context).size.width,
+              decoration: const BoxDecoration(
+                color: Color.fromARGB(255, 62, 130, 238),
+                borderRadius: BorderRadius.only(
+                  bottomLeft: Radius.circular(20.0),
+                  bottomRight: Radius.circular(20.0),
+                ),
+              ),
+              child: DefaultTextStyle(
+                style: TextStyle(color: Colors.white),
+                child: Column(
+                  children: [
+                    Container(
+                      padding: EdgeInsets.all(15),
+                      height: 290,
+                      child: TableCalendar(
+                        rowHeight: 30,
+                        calendarStyle:  CalendarStyle(
+                          holidayTextStyle: TextStyle(color: Colors.white),
+                          weekendTextStyle: TextStyle(color: Colors.white),
+                          weekNumberTextStyle: TextStyle(color: Colors.white),
+                          defaultTextStyle: TextStyle(color: Colors.white),
+                          selectedTextStyle: TextStyle(color: Colors.white30),
+                          todayTextStyle: TextStyle(backgroundColor: Colors.blue[100]),
+                          
+                        ),
+                        focusedDay: today,
+                        firstDay: DateTime.utc(2010, 1, 1),
+                        lastDay: DateTime.utc(2050, 12, 31),
+                        
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ),
-            child: const Text(
-              "Home",
-              style: TextStyle(color: Colors.white),
+            Row(
+              children: [
+                const SizedBox(
+                  width: 12,
+                ),
+                Container(
+                  // Pulse
+                  padding: const EdgeInsets.all(15),
+                  child: const Text(
+                    'Pulse',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20,
+                    ),
+                  ),
+                ),
+                const SizedBox(
+                  width: 210,
+                ),
+                Container(
+                  height: 25,
+                  width: 80,
+                  decoration: BoxDecoration(
+                    color: Color.fromARGB(255, 62, 130, 238),
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: const Center(
+                    child: Text(
+                    'Today',
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: Colors.white,
+                    ),
+                  ),
+                  )
+                ),
+              ],
             ),
-            onPressed: () {
-              Navigator.pushNamed(context, '/');
-            },
-          ),
-        ],
-      ),
-    );
+          ],
+        ));
   }
 }

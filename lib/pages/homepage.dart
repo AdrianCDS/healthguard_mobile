@@ -35,7 +35,7 @@ class Homepage extends StatelessWidget {
                 width: double.infinity,
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color.fromARGB(255, 7, 104, 250),
+                    backgroundColor: Color.fromARGB(255, 7, 104, 250),
                     elevation: 2,
                   ),
                   child: const Text(
