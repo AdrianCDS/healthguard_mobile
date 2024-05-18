@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:healthguard_mobile/utils/auth.dart' as auth;
 
 class Register extends StatelessWidget {
   const Register({super.key});
@@ -15,6 +16,14 @@ class Register extends StatelessWidget {
         r'x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])';
 
     const numbersPattern = r"^\d+$";
+
+    auth.isAuthenticated().then((isAuthenticated) {
+      if (isAuthenticated) {
+        Navigator.pushReplacementNamed(context, '/dashboard');
+      } else {
+        print("User not logged in");
+      }
+    });
 
     return SafeArea(
       child: Scaffold(

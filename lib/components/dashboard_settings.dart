@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:healthguard_mobile/utils/auth.dart' as auth;
 
 class DashboardSettings extends StatelessWidget {
   const DashboardSettings({super.key});
@@ -81,18 +82,19 @@ class DashboardSettings extends StatelessWidget {
                     ),
                     GestureDetector(
                       onTap: () {
-                        Navigator.pushNamed(context, '/');
+                        auth.logout();
+                        Navigator.pushReplacementNamed(context, '/');
                       },
                       child: const Row(
                         children: <Widget>[
                           Icon(
-                            Icons.note_alt_outlined,
+                            Icons.exit_to_app,
                             size: 34,
                             color: Colors.white,
                           ),
                           SizedBox(width: 6),
                           Text(
-                            "Edit profile",
+                            "Log out",
                             style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 18,

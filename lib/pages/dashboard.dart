@@ -5,6 +5,7 @@ import 'package:healthguard_mobile/components/dashboard_calendar.dart';
 import 'package:healthguard_mobile/components/dashboard_home.dart';
 import 'package:healthguard_mobile/components/dashboard_settings.dart';
 import 'package:healthguard_mobile/components/dashboard_stats.dart';
+import 'package:healthguard_mobile/utils/auth.dart' as auth;
 
 class Dashboard extends StatefulWidget {
   const Dashboard({super.key});
@@ -27,45 +28,56 @@ class _DashboardNavigationBarState extends State<Dashboard> {
 
   @override
   Widget build(BuildContext context) {
+    auth.isAuthenticated().then((isAuthenticated) {
+      if (!isAuthenticated) {
+        Navigator.pushReplacementNamed(context, '/login');
+      } else {
+        print("User logged in");
+      }
+    });
+
     return SafeArea(
-      child: Scaffold(
-        body: Container(
-            width: double.infinity,
-            height: double.infinity,
-            decoration: const BoxDecoration(
-              color: Colors.white70,
-            ),
-            child: _widgetOptions[_selectedIndex]),
-        bottomNavigationBar: BottomNavigationBar(
-          type: BottomNavigationBarType.shifting,
-          backgroundColor: Colors.white,
-          elevation: 8,
-          selectedItemColor: const Color.fromRGBO(28, 109, 241, 1),
-          unselectedItemColor: const Color.fromRGBO(6, 40, 96, 1),
-          currentIndex: _selectedIndex,
-          onTap: (int index) {
-            setState(() {
-              _selectedIndex = index;
-            });
-          },
-          items: const [
-            BottomNavigationBarItem(
-              icon: Icon(Icons.home_filled),
-              label: 'Home',
-            ),
-            BottomNavigationBarItem(
-                icon: Icon(Icons.calendar_month_rounded), label: 'Calendar'),
-            BottomNavigationBarItem(
-                icon: Icon(Icons.bar_chart_sharp), label: 'Stats'),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.sticky_note_2),
-              label: 'Activities',
-            ),
-            BottomNavigationBarItem(
-                icon: Icon(Icons.notifications), label: 'Alerts'),
-            BottomNavigationBarItem(
-                icon: Icon(Icons.settings), label: 'Settings'),
-          ],
+      child: PopScope(
+        canPop: true,
+        child: Scaffold(
+          body: Container(
+              width: double.infinity,
+              height: double.infinity,
+              decoration: const BoxDecoration(
+                color: Colors.white70,
+              ),
+              child: _widgetOptions[_selectedIndex]),
+          bottomNavigationBar: BottomNavigationBar(
+            type: BottomNavigationBarType.shifting,
+            backgroundColor: Colors.white,
+            elevation: 8,
+            selectedItemColor: const Color.fromRGBO(28, 109, 241, 1),
+            unselectedItemColor: const Color.fromRGBO(6, 40, 96, 1),
+            currentIndex: _selectedIndex,
+            onTap: (int index) {
+              setState(() {
+                _selectedIndex = index;
+              });
+            },
+            items: const [
+              BottomNavigationBarItem(
+                icon: Icon(Icons.home_filled),
+                label: 'Home',
+              ),
+              BottomNavigationBarItem(
+                  icon: Icon(Icons.calendar_month_rounded), label: 'Calendar'),
+              BottomNavigationBarItem(
+                  icon: Icon(Icons.bar_chart_sharp), label: 'Stats'),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.sticky_note_2),
+                label: 'Activities',
+              ),
+              BottomNavigationBarItem(
+                  icon: Icon(Icons.notifications), label: 'Alerts'),
+              BottomNavigationBarItem(
+                  icon: Icon(Icons.settings), label: 'Settings'),
+            ],
+          ),
         ),
       ),
     );

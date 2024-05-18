@@ -30,27 +30,31 @@ class _DashboardHomeState extends State<DashboardHome> {
                 ),
               ),
               child: DefaultTextStyle(
-                style: TextStyle(color: Colors.white),
+                style: const TextStyle(color: Colors.white),
                 child: Column(
                   children: [
                     Container(
-                      padding: EdgeInsets.all(15),
+                      padding: const EdgeInsets.all(15),
                       height: 290,
                       child: TableCalendar(
                         rowHeight: 30,
-                        calendarStyle:  CalendarStyle(
-                          holidayTextStyle: TextStyle(color: Colors.white),
-                          weekendTextStyle: TextStyle(color: Colors.white),
-                          weekNumberTextStyle: TextStyle(color: Colors.white),
-                          defaultTextStyle: TextStyle(color: Colors.white),
-                          selectedTextStyle: TextStyle(color: Colors.white30),
-                          todayTextStyle: TextStyle(backgroundColor: Colors.blue[100]),
-                          
+                        calendarStyle: CalendarStyle(
+                          holidayTextStyle:
+                              const TextStyle(color: Colors.white),
+                          weekendTextStyle:
+                              const TextStyle(color: Colors.white),
+                          weekNumberTextStyle:
+                              const TextStyle(color: Colors.white),
+                          defaultTextStyle:
+                              const TextStyle(color: Colors.white),
+                          selectedTextStyle:
+                              const TextStyle(color: Colors.white30),
+                          todayTextStyle:
+                              TextStyle(backgroundColor: Colors.blue[100]),
                         ),
                         focusedDay: today,
                         firstDay: DateTime.utc(2010, 1, 1),
                         lastDay: DateTime.utc(2050, 12, 31),
-                        
                       ),
                     ),
                   ],
@@ -77,22 +81,21 @@ class _DashboardHomeState extends State<DashboardHome> {
                   width: 210,
                 ),
                 Container(
-                  height: 25,
-                  width: 80,
-                  decoration: BoxDecoration(
-                    color: Color.fromARGB(255, 62, 130, 238),
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: const Center(
-                    child: Text(
-                    'Today',
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: Colors.white,
+                    height: 25,
+                    width: 80,
+                    decoration: BoxDecoration(
+                      color: const Color.fromARGB(255, 62, 130, 238),
+                      borderRadius: BorderRadius.circular(20),
                     ),
-                  ),
-                  )
-                ),
+                    child: const Center(
+                      child: Text(
+                        'Today',
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Colors.white,
+                        ),
+                      ),
+                    )),
               ],
             ),
           ],

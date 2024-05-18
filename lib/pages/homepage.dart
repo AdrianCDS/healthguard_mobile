@@ -1,10 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:healthguard_mobile/utils/auth.dart' as auth;
 
 class Homepage extends StatelessWidget {
   const Homepage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    auth.isAuthenticated().then((isAuthenticated) {
+      if (isAuthenticated) {
+        Navigator.pushReplacementNamed(context, '/dashboard');
+      } else {
+        print("User not logged in");
+      }
+    });
+
     return SafeArea(
       child: Scaffold(
         body: Container(
@@ -35,7 +44,7 @@ class Homepage extends StatelessWidget {
                 width: double.infinity,
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Color.fromARGB(255, 7, 104, 250),
+                    backgroundColor: const Color.fromARGB(255, 7, 104, 250),
                     elevation: 2,
                   ),
                   child: const Text(
