@@ -15,11 +15,13 @@ class DashboardHome extends StatefulWidget {
 
 class _DashboardHomeState extends State<DashboardHome> {
   DateTime today = DateTime.now();
-  double current_bpm = 84;
-  double current_tmp = 36.5;
-  double current_hum = 45.3;
-  String activity_type = 'Running';
+
+  double currentBPM = 84;
+  double currentTemperature = 36.5;
+  double currentHumidity = 45.3;
+  String activityType = 'Running';
   double percentage = 50;
+
   List<double> chartData = [
     50,
     70,
@@ -38,8 +40,10 @@ class _DashboardHomeState extends State<DashboardHome> {
     100,
     123,
     77,
-  ]; // Replace with your actual data
+  ];
+  // Replace with your actual data
   double currentPulse = 80;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -112,7 +116,7 @@ class _DashboardHomeState extends State<DashboardHome> {
                     height: 25,
                     width: 80,
                     decoration: BoxDecoration(
-                      color: Color.fromARGB(255, 62, 130, 238),
+                      color: const Color.fromARGB(255, 62, 130, 238),
                       borderRadius: BorderRadius.circular(20),
                     ),
                     child: const Center(
@@ -138,14 +142,14 @@ class _DashboardHomeState extends State<DashboardHome> {
                 pulse: currentPulse,
               ),
             ),
-            SizedBox(height: 9),
+            const SizedBox(height: 9),
             Row(
               children: [
-                SizedBox(
+                const SizedBox(
                   width: 20,
                 ),
                 Container(
-                  padding: EdgeInsets.all(20),
+                  padding: const EdgeInsets.all(20),
                   height: 200,
                   width: 110,
                   decoration: BoxDecoration(
@@ -156,7 +160,7 @@ class _DashboardHomeState extends State<DashboardHome> {
                         color: Colors.grey.withOpacity(0.5),
                         spreadRadius: 2,
                         blurRadius: 5,
-                        offset: Offset(0, 3),
+                        offset: const Offset(0, 3),
                       )
                     ],
                   ),
@@ -164,50 +168,46 @@ class _DashboardHomeState extends State<DashboardHome> {
                     // heart rate container
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Icon(
+                      const Icon(
                         FontAwesomeIcons.heartPulse,
                         color: Colors.white,
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 15,
                       ),
                       Container(
                         alignment: Alignment.topLeft,
-                        child: Text(
+                        child: const Text(
                           'Heart rate',
                           style: TextStyle(color: Colors.white, fontSize: 10),
                         ),
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 40,
                       ),
-                      Container(
-                        child: Text(
-                          current_bpm.toStringAsFixed(1),
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 20),
-                        ),
+                      Text(
+                        currentBPM.toStringAsFixed(1),
+                        style: const TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 20),
                       ),
-                      Container(
-                        child: Text(
-                          'BPM',
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 20),
-                        ),
+                      const Text(
+                        'BPM',
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 20),
                       ),
                     ],
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   width: 20,
                 ),
                 Container(
                   // Tempereature container
-                  padding: EdgeInsets.all(20),
+                  padding: const EdgeInsets.all(20),
                   height: 200,
                   width: 110,
                   decoration: BoxDecoration(
@@ -218,115 +218,107 @@ class _DashboardHomeState extends State<DashboardHome> {
                         color: Colors.grey.withOpacity(0.5),
                         spreadRadius: 2,
                         blurRadius: 5,
-                        offset: Offset(0, 3),
+                        offset: const Offset(0, 3),
                       )
                     ],
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Icon(
+                      const Icon(
                         FontAwesomeIcons.temperatureHalf,
                         color: Colors.white,
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 15,
                       ),
                       Container(
                         alignment: Alignment.topLeft,
-                        child: Text(
+                        child: const Text(
                           'Temperature',
                           style: TextStyle(color: Colors.white, fontSize: 10),
                         ),
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 40,
                       ),
-                      Container(
-                        child: Text(
-                          current_tmp.toStringAsFixed(1),
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 20),
-                        ),
+                      Text(
+                        currentTemperature.toStringAsFixed(1),
+                        style: const TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 20),
                       ),
-                      Container(
-                        child: Text(
-                          '°C',
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 20),
-                        ),
+                      const Text(
+                        '°C',
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 20),
                       ),
                     ],
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   width: 20,
                 ),
                 Container(
                   // Humidity container
-                  padding: EdgeInsets.all(20),
+                  padding: const EdgeInsets.all(20),
                   height: 200,
                   width: 110,
                   decoration: BoxDecoration(
-                    color: Color.fromARGB(255, 26, 54, 102),
+                    color: const Color.fromARGB(255, 26, 54, 102),
                     borderRadius: BorderRadius.circular(20),
                     boxShadow: [
                       BoxShadow(
                         color: Colors.grey.withOpacity(0.5),
                         spreadRadius: 2,
                         blurRadius: 5,
-                        offset: Offset(0, 3),
+                        offset: const Offset(0, 3),
                       )
                     ],
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Icon(
+                      const Icon(
                         FontAwesomeIcons.droplet,
                         color: Colors.white,
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 15,
                       ),
                       Container(
                         alignment: Alignment.topLeft,
-                        child: Text(
+                        child: const Text(
                           'Humidity',
                           style: TextStyle(color: Colors.white, fontSize: 10),
                         ),
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 40,
                       ),
-                      Container(
-                        child: Text(
-                          current_hum.toStringAsFixed(1),
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 20),
-                        ),
+                      Text(
+                        currentHumidity.toStringAsFixed(1),
+                        style: const TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 20),
                       ),
-                      Container(
-                        child: Text(
-                          '%',
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 20),
-                        ),
+                      const Text(
+                        '%',
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 20),
                       ),
                     ],
                   ),
                 ),
               ],
             ),
-            SizedBox(
+            const SizedBox(
               height: 9,
             ),
             Container(
@@ -341,7 +333,7 @@ class _DashboardHomeState extends State<DashboardHome> {
                     color: Colors.grey.withOpacity(0.5),
                     spreadRadius: 2,
                     blurRadius: 5,
-                    offset: Offset(0, 3),
+                    offset: const Offset(0, 3),
                   )
                 ],
               ),
@@ -351,54 +343,44 @@ class _DashboardHomeState extends State<DashboardHome> {
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      SizedBox(
+                      const SizedBox(
                         width: 13,
                       ),
-                      Container(
-                        child: Text(
-                          activity_type.toString(),
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 15),
-                        ),
+                      Text(
+                        activityType.toString(),
+                        style: const TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 15),
                       ),
-                      SizedBox(
+                      const SizedBox(
                         width: 135,
                       ),
-                      Container(
-                        child: Text(
-                          'Due ',
-                          style: TextStyle(fontSize: 13),
-                        ),
+                      const Text(
+                        'Due ',
+                        style: TextStyle(fontSize: 13),
                       ),
-                      Container(
-                        child: Text(
-                          DateFormat('dd MMM, yyyy hh:mm a').format(
-                              today), // data cand trebuie facut exercitiu
-                          style: TextStyle(fontSize: 13),
-                        ),
+                      Text(
+                        DateFormat('dd MMM, yyyy hh:mm a')
+                            .format(today), // data cand trebuie facut exercitiu
+                        style: const TextStyle(fontSize: 13),
                       ),
                     ],
                   ),
                   Row(
                     children: [
-                      SizedBox(
+                      const SizedBox(
                         width: 13,
                       ),
-                      Container(
-                        child: Text(
-                          percentage.toString(),
-                          style: TextStyle(fontSize: 12),
-                        ),
+                      Text(
+                        percentage.toString(),
+                        style: const TextStyle(fontSize: 12),
                       ),
-                      Container(
-                        child: Text(
-                          '% completed',
-                          style: TextStyle(fontSize: 12),
-                        ),
+                      const Text(
+                        '% completed',
+                        style: TextStyle(fontSize: 12),
                       ),
                     ],
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 7,
                   ),
                   Container(
