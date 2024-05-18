@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:healthguard_mobile/widgets/HeartRateChart.dart';
+import 'package:healthguard_mobile/widgets/bpm_chart.dart';
 import 'package:intl/intl.dart';
-//import 'package:syncfusion_flutter_calendar/calendar.dart';
-//import 'package:syncfusion_flutter_core/theme.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 class DashboardHome extends StatefulWidget {
@@ -137,7 +135,7 @@ class _DashboardHomeState extends State<DashboardHome> {
                 color: Colors.transparent,
                 borderRadius: BorderRadius.circular(20),
               ),
-              child: CustomChartWidget(
+              child: BpmChart(
                 data: chartData,
                 pulse: currentPulse,
               ),

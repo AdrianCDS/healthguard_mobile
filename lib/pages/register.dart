@@ -20,8 +20,6 @@ class Register extends StatelessWidget {
     auth.isAuthenticated().then((isAuthenticated) {
       if (isAuthenticated) {
         Navigator.pushReplacementNamed(context, '/dashboard');
-      } else {
-        print("User not logged in");
       }
     });
 

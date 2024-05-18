@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
-class CustomChartWidget extends StatelessWidget {
+class BpmChart extends StatelessWidget {
+  const BpmChart({super.key, required this.pulse, required this.data});
+
   final double pulse; // Pulse value from 0 to 250
-  final List<double>
-      data;
-  CustomChartWidget({required this.pulse, required this.data});
+  final List<double> data;
 
   @override
   Widget build(BuildContext context) {
@@ -19,17 +19,17 @@ class CustomChartWidget extends StatelessWidget {
             color: Colors.grey.withOpacity(0.5),
             spreadRadius: 2,
             blurRadius: 5,
-            offset: Offset(0, 3), // changes position of shadow
+            offset: const Offset(0, 3), // changes position of shadow
           ),
         ],
       ),
-      padding: EdgeInsets.all(10.0),
+      padding: const EdgeInsets.all(10.0),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Container(
             alignment: Alignment.topLeft,
-            child: Text(
+            child: const Text(
               '   250 BPM',
               style: TextStyle(
                 color: Colors.black,
@@ -37,20 +37,20 @@ class CustomChartWidget extends StatelessWidget {
               ),
             ),
           ),
-          SizedBox(height: 2.0),
+          const SizedBox(height: 2.0),
           Expanded(
             child: Container(
               width: double.infinity,
-              padding: EdgeInsets.symmetric(horizontal: 10),
+              padding: const EdgeInsets.symmetric(horizontal: 10),
               child: CustomPaint(
-                size: Size(double.infinity, double.infinity),
+                size: const Size(double.infinity, double.infinity),
                 painter: ChartPainter(data: data, pulse: pulse),
               ),
             ),
           ),
           Container(
             alignment: Alignment.topRight,
-            child: Text(
+            child: const Text(
               '1 day',
               style: TextStyle(
                 color: Colors.black,
@@ -61,19 +61,20 @@ class CustomChartWidget extends StatelessWidget {
           Row(
             children: [
               Container(
-                padding: EdgeInsets.symmetric(horizontal: 8.0),
-                child: Text('Average:'),
+                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                child: const Text('Average:'),
               ),
-              Container(
-                child: Text( averageBPM.toStringAsFixed(1),
-                style: TextStyle(fontWeight: FontWeight.bold),)
-              )
+              Text(
+                averageBPM.toStringAsFixed(1),
+                style: const TextStyle(fontWeight: FontWeight.bold),
+              ),
             ],
           )
         ],
       ),
     );
   }
+
   double calculateAverage(List<double> data) {
     if (data.isEmpty) return 0.0;
     double sum = 0.0;
@@ -117,7 +118,7 @@ class ChartPainter extends CustomPainter {
     }
     canvas.drawPath(path, linePaint);
 
-    canvas.drawLine(Offset(0, chartHeight), Offset(0, 0),
+    canvas.drawLine(Offset(0, chartHeight), const Offset(0, 0),
         charlinesPain); // Left vertical line
     canvas.drawLine(Offset(0, chartHeight), Offset(chartWidth, chartHeight),
         charlinesPain); // Bottom horizontal line

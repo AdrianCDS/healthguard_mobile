@@ -69,8 +69,6 @@ class _LoginState extends State<Login> {
     auth.isAuthenticated().then((isAuthenticated) {
       if (isAuthenticated) {
         Navigator.pushReplacementNamed(context, '/dashboard');
-      } else {
-        print("User not logged in");
       }
     });
 

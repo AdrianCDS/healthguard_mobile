@@ -31,8 +31,6 @@ class _DashboardNavigationBarState extends State<Dashboard> {
     auth.isAuthenticated().then((isAuthenticated) {
       if (!isAuthenticated) {
         Navigator.pushReplacementNamed(context, '/login');
-      } else {
-        print("User logged in");
       }
     });
 
