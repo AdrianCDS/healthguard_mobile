@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:healthguard_mobile/utils/auth.dart' as auth;
+// import 'package:healthguard_mobile/utils/auth.dart' as auth;
+import 'package:go_router/go_router.dart';
 
 class Register extends StatelessWidget {
   const Register({super.key});
@@ -17,20 +18,14 @@ class Register extends StatelessWidget {
 
     const numbersPattern = r"^\d+$";
 
-    auth.isAuthenticated().then((isAuthenticated) {
-      if (isAuthenticated) {
-        Navigator.pushReplacementNamed(context, '/dashboard');
-      }
-    });
+    // auth.isAuthenticated().then((isAuthenticated) {
+    //   if (isAuthenticated) {
+    //     Navigator.pushReplacementNamed(context, '/dashboard');
+    //   }
+    // });
 
     return SafeArea(
       child: Scaffold(
-        floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            Navigator.pushNamed(context, '/');
-          },
-          child: const Icon(Icons.home),
-        ),
         body: Container(
           width: double.infinity,
           height: double.infinity,
@@ -263,7 +258,7 @@ class Register extends StatelessWidget {
                     ),
                     onPressed: () {
                       if (formKey.currentState!.validate()) {
-                        Navigator.pushNamed(context, '/dashboard');
+                        // register function goes here
                       }
                     },
                   ),
@@ -281,8 +276,8 @@ class Register extends StatelessWidget {
                     ),
                     const SizedBox(width: 4),
                     GestureDetector(
-                      onTap: () {
-                        Navigator.pushNamed(context, '/login');
+                      onTap: () async {
+                        context.pushNamed("/login");
                       },
                       child: const Text(
                         "Sign In.",

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:healthguard_mobile/utils/auth.dart' as auth;
+import 'package:go_router/go_router.dart';
 
 class DashboardSettings extends StatelessWidget {
   const DashboardSettings({super.key});
@@ -81,9 +82,9 @@ class DashboardSettings extends StatelessWidget {
                       ],
                     ),
                     GestureDetector(
-                      onTap: () {
+                      onTap: () async {
                         auth.logout();
-                        Navigator.pushReplacementNamed(context, '/');
+                        context.goNamed("/home");
                       },
                       child: const Row(
                         children: <Widget>[

@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:healthguard_mobile/utils/auth.dart' as auth;
+import 'package:go_router/go_router.dart';
+// import 'package:healthguard_mobile/utils/auth.dart' as auth;
 
 class Homepage extends StatelessWidget {
   const Homepage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    auth.isAuthenticated().then((isAuthenticated) {
-      if (isAuthenticated) {
-        Navigator.pushReplacementNamed(context, '/dashboard');
-      }
-    });
+    // auth.isAuthenticated().then((isAuthenticated) {
+    //   if (isAuthenticated) {
+    //     context.goNamed("/dashboard");
+    //   }
+    // });
 
     return SafeArea(
       child: Scaffold(
@@ -50,7 +51,7 @@ class Homepage extends StatelessWidget {
                     style: TextStyle(color: Colors.white),
                   ),
                   onPressed: () {
-                    Navigator.pushNamed(context, '/register');
+                    context.pushNamed("/register");
                   },
                 ),
               ),
@@ -67,8 +68,8 @@ class Homepage extends StatelessWidget {
                   ),
                   const SizedBox(width: 4),
                   GestureDetector(
-                    onTap: () {
-                      Navigator.pushNamed(context, '/login');
+                    onTap: () async {
+                      context.pushNamed("/login");
                     },
                     child: const Text(
                       "Sign in.",

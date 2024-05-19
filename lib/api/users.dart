@@ -21,3 +21,56 @@ String getUserAuthToken() {
 
   return query;
 }
+
+String registerUser() {
+  String query = """
+  mutation registerMutation(\$email: String!, \$password: String!, \$firstName: String!, \$lastName: String!, \$cnp: String!, \$medicEmail: String!) {
+      registerPacient(
+        input: {
+          email: \$email
+          password: \$password
+          firstName: \$firstName
+          lastName: \$lastName
+          pacientProfile: {
+            cnp: \$cnp
+          }
+          medicEmail: \$medicEmail
+        }
+      ) {
+        id
+        email
+        firstName
+        lastName
+        phoneNumber
+        medicProfile {
+          id
+          badgeNumber
+          pacients {
+            id
+            cnp
+            age
+          }
+        }
+        pacientProfile {
+          id
+          cnp
+          age
+          state
+          insertedAt
+          address {
+            country
+            city
+            street
+            streetNumber
+          }
+        medicProfile {
+          id
+          badgeNumber
+        }
+      }
+    }
+  }
+  """;
+
+  return query;
+}

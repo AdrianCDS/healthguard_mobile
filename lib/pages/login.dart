@@ -3,7 +3,8 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:heroicons/heroicons.dart';
 import 'package:healthguard_mobile/api/users.dart' as users;
-import 'package:healthguard_mobile/utils/auth.dart' as auth;
+// import 'package:healthguard_mobile/utils/auth.dart' as auth;
+import 'package:go_router/go_router.dart';
 
 class Login extends StatefulWidget {
   const Login({super.key});
@@ -52,7 +53,7 @@ class _LoginState extends State<Login> {
         await storage.write(key: "authToken", value: token);
 
         if (context.mounted) {
-          Navigator.pushReplacementNamed(context, '/dashboard');
+          context.goNamed("/dashboard");
         }
       }
     } catch (e) {
@@ -66,20 +67,14 @@ class _LoginState extends State<Login> {
 
   @override
   Widget build(BuildContext context) {
-    auth.isAuthenticated().then((isAuthenticated) {
-      if (isAuthenticated) {
-        Navigator.pushReplacementNamed(context, '/dashboard');
-      }
-    });
+    // auth.isAuthenticated().then((isAuthenticated) {
+    //   if (isAuthenticated) {
+    //     Navigator.pushReplacementNamed(context, '/dashboard');
+    //   }
+    // });
 
     return SafeArea(
       child: Scaffold(
-        floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            Navigator.pushNamed(context, '/');
-          },
-          child: const Icon(Icons.home),
-        ),
         body: Container(
           width: double.infinity,
           height: double.infinity,
@@ -211,8 +206,8 @@ class _LoginState extends State<Login> {
                         ),
                         const SizedBox(width: 4),
                         GestureDetector(
-                          onTap: () {
-                            Navigator.pushNamed(context, '/register');
+                          onTap: () async {
+                            context.pushNamed("/register");
                           },
                           child: const Text(
                             "Sign Up.",

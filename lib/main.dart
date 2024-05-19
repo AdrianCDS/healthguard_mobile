@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:healthguard_mobile/pages/dashboard.dart';
 import 'package:healthguard_mobile/pages/homepage.dart';
@@ -26,15 +27,50 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return GraphQLProvider(
       client: graphql_client.getClient(),
-      child: MaterialApp(
+      child: MaterialApp.router(
         debugShowCheckedModeBanner: false,
-        home: const Homepage(),
-        routes: {
-          '/register': (context) => const Register(),
-          '/login': (context) => const Login(),
-          '/dashboard': (context) => const Dashboard(),
-        },
+        routerConfig: _router,
       ),
     );
   }
 }
+
+final GoRouter _router = GoRouter(
+    initialLocation: "/home",
+    // redirect: (context, state) {
+    //   auth.isAuthenticated().then((isAuthenticated) {
+    //     if (isAuthenticated) {
+    //       return "/dashboard";
+    //     } else {
+    //       return "/home";
+    //     }
+    //   });
+
+    //   return null;
+    // },
+    routes: <RouteBase>[
+      GoRoute(
+          name: "/home",
+          path: "/home",
+          builder: (context, state) {
+            return const Homepage();
+          }),
+      GoRoute(
+          name: "/register",
+          path: "/register",
+          builder: (context, state) {
+            return const Register();
+          }),
+      GoRoute(
+          name: "/login",
+          path: "/login",
+          builder: (context, state) {
+            return const Login();
+          }),
+      GoRoute(
+          name: "/dashboard",
+          path: "/dashboard",
+          builder: (context, state) {
+            return const Dashboard();
+          }),
+    ]);
