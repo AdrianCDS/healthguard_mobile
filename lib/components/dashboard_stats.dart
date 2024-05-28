@@ -55,29 +55,14 @@ class _DashboardStatsState extends State<DashboardStats> {
         List? lastReadEcgData =
             result.data?['getPacientSensorDataByDate']?['ecg'];
 
-        if (lastReadBpmData == null ||
-            lastReadTemperatureData == null ||
-            lastReadHumidityData == null ||
-            lastReadEcgData == null) {
-          return const Center(
-            child: Text(
-              "Couldn't read wearable data.",
-              style: TextStyle(
-                  color: Colors.black45,
-                  fontSize: 14,
-                  fontWeight: FontWeight.bold),
-            ),
-          );
-        }
-
         List<double> bpmChartData =
-            lastReadBpmData.map((e) => e as double).toList();
+            helpers.computeSingleChartData(lastReadBpmData);
         List<double> temperatureChartData =
-            lastReadTemperatureData.map((e) => e as double).toList();
+            helpers.computeSingleChartData(lastReadTemperatureData);
         List<double> humidityChartData =
-            lastReadHumidityData.map((e) => e as double).toList();
+            helpers.computeSingleChartData(lastReadHumidityData);
         List<double> ecgChartData =
-            lastReadEcgData.map((e) => e as double).toList();
+            helpers.computeSingleChartData(lastReadEcgData);
 
         return SizedBox(
           width: double.infinity,
@@ -137,24 +122,15 @@ class _DashboardStatsState extends State<DashboardStats> {
                       height: 4,
                     ),
                     Container(
-                      height: 130,
-                      width: double.infinity,
-                      decoration: BoxDecoration(
-                        color: Colors.transparent,
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: bpmChartData.isEmpty
-                          ? const Text(
-                              "No data.",
-                              style: TextStyle(
-                                  color: Colors.black45,
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.bold),
-                            )
-                          : Chart(
-                              data: bpmChartData,
-                            ),
-                    )
+                        height: 130,
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                          color: Colors.transparent,
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: Chart(
+                          data: bpmChartData,
+                        ))
                   ],
                 ),
               ),
@@ -181,17 +157,9 @@ class _DashboardStatsState extends State<DashboardStats> {
                           color: Colors.transparent,
                           borderRadius: BorderRadius.circular(20),
                         ),
-                        child: temperatureChartData.isEmpty
-                            ? const Text(
-                                "No data.",
-                                style: TextStyle(
-                                    color: Colors.black45,
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.bold),
-                              )
-                            : Chart(
-                                data: temperatureChartData,
-                              ),
+                        child: Chart(
+                          data: temperatureChartData,
+                        ),
                       )
                     ]),
               ),
@@ -218,17 +186,9 @@ class _DashboardStatsState extends State<DashboardStats> {
                           color: Colors.transparent,
                           borderRadius: BorderRadius.circular(20),
                         ),
-                        child: humidityChartData.isEmpty
-                            ? const Text(
-                                "No data.",
-                                style: TextStyle(
-                                    color: Colors.black45,
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.bold),
-                              )
-                            : Chart(
-                                data: humidityChartData,
-                              ),
+                        child: Chart(
+                          data: humidityChartData,
+                        ),
                       )
                     ]),
               ),
@@ -255,17 +215,9 @@ class _DashboardStatsState extends State<DashboardStats> {
                           color: Colors.transparent,
                           borderRadius: BorderRadius.circular(20),
                         ),
-                        child: ecgChartData.isEmpty
-                            ? const Text(
-                                "No data.",
-                                style: TextStyle(
-                                    color: Colors.black45,
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.bold),
-                              )
-                            : Chart(
-                                data: ecgChartData,
-                              ),
+                        child: Chart(
+                          data: ecgChartData,
+                        ),
                       )
                     ]),
               ),

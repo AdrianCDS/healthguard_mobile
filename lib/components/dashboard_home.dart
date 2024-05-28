@@ -68,26 +68,16 @@ class _DashboardHomeState extends State<DashboardHome> {
         List? lastReadHumidityData =
             result.data?['getPacientSensorDataByDatetime']?['humidity'];
 
-        if (lastReadBpmData == null ||
-            lastReadTemperatureData == null ||
-            lastReadHumidityData == null) {
-          return const Center(
-            child: Text(
-              "Couldn't read wearable data.",
-              style: TextStyle(
-                  color: Colors.black45,
-                  fontSize: 14,
-                  fontWeight: FontWeight.bold),
-            ),
-          );
-        }
-
-        var currentBpm = lastReadBpmData.isEmpty ? "-" : lastReadBpmData.last;
-        var currentTemperature = lastReadTemperatureData.isEmpty
-            ? "-"
-            : lastReadTemperatureData.last;
-        var currentHumidity =
-            lastReadHumidityData.isEmpty ? "-" : lastReadHumidityData.last;
+        var currentBpm = helpers.isListAvailable(lastReadBpmData)
+            ? lastReadBpmData?.last
+            : "-";
+        var currentTemperature =
+            helpers.isListAvailable(lastReadTemperatureData)
+                ? lastReadTemperatureData?.last
+                : "-";
+        var currentHumidity = helpers.isListAvailable(lastReadHumidityData)
+            ? lastReadHumidityData?.last
+            : "-";
 
         List<double> chartData = helpers.computeChartData(_selectedIndex,
             lastReadBpmData, lastReadTemperatureData, lastReadHumidityData);
@@ -114,14 +104,22 @@ class _DashboardHomeState extends State<DashboardHome> {
               );
             }
 
-            int completedPercentage = result
-                .data?['getPacientCurrentActivityStats']['completedPercentage'];
+            int completedPercentage =
+                result.data?['getPacientCurrentActivityStats'] == null
+                    ? 0
+                    : result.data?['getPacientCurrentActivityStats']
+                        ['completedPercentage'];
 
             String activity =
-                result.data?['getPacientCurrentActivityStats']['type'];
+                result.data?['getPacientCurrentActivityStats'] == null
+                    ? ""
+                    : result.data?['getPacientCurrentActivityStats']['type'];
 
             String? dateString =
-                result.data?['getPacientCurrentActivityStats']['endDate'];
+                result.data?['getPacientCurrentActivityStats'] == null
+                    ? null
+                    : result.data?['getPacientCurrentActivityStats']['endDate'];
+
             DateTime? endDate =
                 dateString == null ? null : DateTime.parse(dateString);
 
@@ -241,29 +239,18 @@ class _DashboardHomeState extends State<DashboardHome> {
                       ],
                     ),
                     Container(
-                      height: 130,
-                      width: 200,
-                      decoration: BoxDecoration(
-                        color: Colors.transparent,
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: lastReadBpmData.isEmpty ||
-                              lastReadTemperatureData.isEmpty ||
-                              lastReadHumidityData.isEmpty
-                          ? const Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 16),
-                              child: Text(
-                                "No data.",
-                                style: TextStyle(
-                                    color: Colors.black45,
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.bold),
-                              ),
-                            )
-                          : Chart(
-                              data: chartData,
-                            ),
-                    ),
+                        height: 130,
+                        width: 200,
+                        decoration: BoxDecoration(
+                          color: Colors.transparent,
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          child: Chart(
+                            data: chartData,
+                          ),
+                        )),
                     const SizedBox(height: 9),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -497,35 +484,44 @@ class _DashboardHomeState extends State<DashboardHome> {
                                   ),
                                 ],
                               )
-                            : Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
+                            : activity != ""
+                                ? Column(
                                     crossAxisAlignment:
-                                        CrossAxisAlignment.center,
+                                        CrossAxisAlignment.start,
                                     children: [
-                                      Text(
-                                        activity,
-                                        style: const TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 15),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        children: [
+                                          Text(
+                                            activity,
+                                            style: const TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 15),
+                                          ),
+                                        ],
+                                      ),
+                                      const SizedBox(
+                                        height: 2,
+                                      ),
+                                      const Text(
+                                        'There are is no set target from your doctor for this activity.',
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.normal,
+                                            fontSize: 14,
+                                            color: Colors.grey),
                                       ),
                                     ],
-                                  ),
-                                  const SizedBox(
-                                    height: 8,
-                                  ),
-                                  const Text(
-                                    'There are is no set target from your doctor for this activity.',
+                                  )
+                                : const Text(
+                                    'No activity detected.',
                                     style: TextStyle(
                                         fontWeight: FontWeight.normal,
                                         fontSize: 14,
                                         color: Colors.grey),
                                   ),
-                                ],
-                              ),
                       ),
                     ),
                   ],

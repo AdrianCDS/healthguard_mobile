@@ -14,29 +14,37 @@ double computeSensorData(dataValues) {
 }
 
 List<double> computeChartData(
-    int index, List bpmData, List tempData, List humData) {
+    int index, List? bpmData, List? tempData, List? humData) {
   switch (index) {
     case 0:
-      if (bpmData.isEmpty) {
+      if (!isListAvailable(bpmData)) {
         return [0.0];
       }
 
-      return bpmData.map((e) => e as double).toList();
+      return bpmData!.map((e) => e as double).toList();
     case 1:
-      if (tempData.isEmpty) {
+      if (!isListAvailable(tempData)) {
         return [0.0];
       }
 
-      return tempData.map((e) => e as double).toList();
+      return tempData!.map((e) => e as double).toList();
     case 2:
-      if (humData.isEmpty) {
+      if (!isListAvailable(humData)) {
         return [0.0];
       }
 
-      return humData.map((e) => e as double).toList();
+      return humData!.map((e) => e as double).toList();
     default:
       return [0.0];
   }
+}
+
+List<double> computeSingleChartData(List? data) {
+  if (!isListAvailable(data)) {
+    return [0.0];
+  }
+
+  return data!.map((e) => e as double).toList();
 }
 
 String selectedDataToPreview(int index) {
@@ -108,7 +116,7 @@ List<bool> switchActivityRadioButtons(int selected) {
   }
 }
 
-List<bool> determineSwitchButtonsOnLoad(String activity) {
+List<bool> determineSwitchButtonsOnLoad(String? activity) {
   switch (activity) {
     case "CYCLING":
       return [true, false, false, false, false];
@@ -123,4 +131,16 @@ List<bool> determineSwitchButtonsOnLoad(String activity) {
     default:
       return [false, false, false, false, false];
   }
+}
+
+bool isListAvailable(List? data) {
+  if (data == null) {
+    return false;
+  } else {
+    if (data.isEmpty) {
+      return false;
+    }
+  }
+
+  return true;
 }

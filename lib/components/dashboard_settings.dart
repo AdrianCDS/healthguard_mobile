@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:healthguard_mobile/api/users.dart' as users;
+import 'package:url_launcher/url_launcher.dart';
 
 class DashboardSettings extends StatefulWidget {
   const DashboardSettings({super.key, required this.userToken});
@@ -231,7 +232,9 @@ class _DashboardSettingsState extends State<DashboardSettings> {
                           padding: const EdgeInsets.symmetric(horizontal: 24),
                           child: userState != "PENDING"
                               ? GestureDetector(
-                                  onTap: () {},
+                                  onTap: () {
+                                    launchUrl(Uri.parse("tel:$medicNumber"));
+                                  },
                                   child: Card(
                                     elevation: 4,
                                     color: Colors.white,

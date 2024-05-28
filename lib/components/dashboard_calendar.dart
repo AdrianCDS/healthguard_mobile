@@ -82,18 +82,6 @@ class _DashboardCalendarState extends State<DashboardCalendar> {
         String? currentActivity = result.data?['getUserByToken']
             ['pacientProfile']['activityType']?['type'];
 
-        if (activityData == null || currentActivity == null) {
-          return const Center(
-            child: Text(
-              "Couldn't read wearable data.",
-              style: TextStyle(
-                  color: Colors.black45,
-                  fontSize: 14,
-                  fontWeight: FontWeight.bold),
-            ),
-          );
-        }
-
         List<bool> initialRadioGroup =
             helpers.determineSwitchButtonsOnLoad(currentActivity);
 
@@ -161,7 +149,7 @@ class _DashboardCalendarState extends State<DashboardCalendar> {
                         color: Colors.transparent,
                         borderRadius: BorderRadius.circular(20),
                       ),
-                      child: activityData.isEmpty
+                      child: !helpers.isListAvailable(activityData)
                           ? const Text(
                               "No data.",
                               style: TextStyle(
@@ -229,14 +217,14 @@ class _DashboardCalendarState extends State<DashboardCalendar> {
                                       height: 128,
                                       child: ListView.builder(
                                         scrollDirection: Axis.vertical,
-                                        itemCount: activityData.length,
+                                        itemCount: activityData?.length,
                                         itemBuilder: (context, index) {
-                                          int percentage = activityData[index]
+                                          int percentage = activityData?[index]
                                               ['completedPercentage'];
                                           DateTime endDate = DateTime.parse(
-                                              activityData[index]['endDate']);
+                                              activityData?[index]['endDate']);
                                           String type =
-                                              activityData[index]['type'];
+                                              activityData?[index]['type'];
 
                                           return Padding(
                                             padding: const EdgeInsets.only(
