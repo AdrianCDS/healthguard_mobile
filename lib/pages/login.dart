@@ -3,7 +3,6 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:heroicons/heroicons.dart';
 import 'package:healthguard_mobile/api/users.dart' as users;
-// import 'package:healthguard_mobile/utils/auth.dart' as auth;
 import 'package:go_router/go_router.dart';
 
 class Login extends StatefulWidget {
@@ -53,7 +52,7 @@ class _LoginState extends State<Login> {
         await storage.write(key: "authToken", value: token);
 
         if (context.mounted) {
-          context.goNamed("/dashboard");
+          context.goNamed("/dashboard", pathParameters: {"token": token});
         }
       }
     } catch (e) {
@@ -67,12 +66,6 @@ class _LoginState extends State<Login> {
 
   @override
   Widget build(BuildContext context) {
-    // auth.isAuthenticated().then((isAuthenticated) {
-    //   if (isAuthenticated) {
-    //     Navigator.pushReplacementNamed(context, '/dashboard');
-    //   }
-    // });
-
     return SafeArea(
       child: Scaffold(
         body: Container(

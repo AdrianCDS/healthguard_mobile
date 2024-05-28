@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-// import 'package:healthguard_mobile/utils/auth.dart' as auth;
+import 'package:healthguard_mobile/utils/auth.dart' as auth;
 
 class Homepage extends StatelessWidget {
   const Homepage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    // auth.isAuthenticated().then((isAuthenticated) {
-    //   if (isAuthenticated) {
-    //     context.goNamed("/dashboard");
-    //   }
-    // });
+    auth.isAuthenticated().then((isAuthenticated) {
+      if (isAuthenticated.$1) {
+        context.goNamed("/dashboard",
+            pathParameters: {"token": isAuthenticated.$2!});
+      }
+    });
 
     return SafeArea(
       child: Scaffold(

@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:healthguard_mobile/widgets/bpm_chart.dart';
+import 'package:healthguard_mobile/widgets/chart.dart';
 import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
+import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:healthguard_mobile/api/users.dart' as users;
+import 'package:healthguard_mobile/utils/helpers.dart' as helpers;
 
 class DashboardHome extends StatefulWidget {
-  const DashboardHome({super.key});
+  const DashboardHome({super.key, required this.userToken});
+
+  final String userToken;
 
   @override
   State<DashboardHome> createState() => _DashboardHomeState();
@@ -13,411 +18,521 @@ class DashboardHome extends StatefulWidget {
 
 class _DashboardHomeState extends State<DashboardHome> {
   DateTime today = DateTime.now();
+  String todayShifted = helpers
+      .computeCurrentDate(DateTime.now().subtract(const Duration(hours: 3)));
 
-  double currentBPM = 84;
-  double currentTemperature = 36.5;
-  double currentHumidity = 45.3;
-  String activityType = 'Running';
-  double percentage = 50;
+  int _selectedIndex = 0;
 
-  List<double> chartData = [
-    50,
-    70,
-    90,
-    120,
-    100,
-    80,
-    110,
-    77,
-    130,
-    99,
-    89,
-    104,
-    180,
-    190,
-    100,
-    123,
-    77,
-  ];
-  // Replace with your actual data
-  double currentPulse = 80;
+  DateTime _selectedDay = DateTime.now();
+  DateTime _focusedDay = DateTime.now();
+
+  void changeCard(index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
+
+  void _onDaySelected(DateTime selectedDay, DateTime focusedDay) {
+    if (!isSameDay(_selectedDay, selectedDay)) {
+      setState(() {
+        _focusedDay = focusedDay;
+        _selectedDay = selectedDay;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        backgroundColor: Colors.white,
-        body: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Container(
-              height: 290,
-              width: MediaQuery.of(context).size.width,
-              decoration: const BoxDecoration(
-                color: Color.fromARGB(255, 62, 130, 238),
-                borderRadius: BorderRadius.only(
-                  bottomLeft: Radius.circular(20.0),
-                  bottomRight: Radius.circular(20.0),
-                ),
-              ),
-              child: DefaultTextStyle(
-                style: const TextStyle(color: Colors.white),
+    return Query(
+      options: QueryOptions(
+          fetchPolicy: FetchPolicy.cacheFirst,
+          document: gql(users.getUserCurrentChartData()),
+          variables: {"token": widget.userToken, "date": todayShifted}),
+      builder: (result, {fetchMore, refetch}) {
+        if (result.hasException) {
+          return Center(
+            child: Text(result.exception.toString()),
+          );
+        }
+
+        if (result.isLoading) {
+          return const Center(
+            child: Text('Loading...'),
+          );
+        }
+
+        List? lastReadBpmData =
+            result.data?['getPacientSensorDataByDatetime']['bpm'];
+        List? lastReadTemperatureData =
+            result.data?['getPacientSensorDataByDatetime']['temperature'];
+        List? lastReadHumidityData =
+            result.data?['getPacientSensorDataByDatetime']['humidity'];
+
+        if (lastReadBpmData == null ||
+            lastReadTemperatureData == null ||
+            lastReadHumidityData == null) {
+          return const Center(
+            child: Text(
+              "Couldn't read wearable data.",
+              style: TextStyle(
+                  color: Colors.black45,
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold),
+            ),
+          );
+        }
+
+        var currentBpm = lastReadBpmData.isEmpty ? "-" : lastReadBpmData.last;
+        var currentTemperature = lastReadTemperatureData.isEmpty
+            ? "-"
+            : lastReadTemperatureData.last;
+        var currentHumidity =
+            lastReadHumidityData.isEmpty ? "-" : lastReadHumidityData.last;
+
+        List<double> chartData = helpers.computeChartData(_selectedIndex,
+            lastReadBpmData, lastReadTemperatureData, lastReadHumidityData);
+
+        return Query(
+          options: QueryOptions(
+              fetchPolicy: FetchPolicy.cacheFirst,
+              document: gql(users.getUserCurrentActivityData()),
+              variables: {
+                "token": widget.userToken,
+                "date": helpers.computeCurrentDate(
+                    _selectedDay.subtract(const Duration(hours: 3)))
+              }),
+          builder: (result, {fetchMore, refetch}) {
+            if (result.hasException) {
+              return Center(
+                child: Text(result.exception.toString()),
+              );
+            }
+
+            if (result.isLoading) {
+              return const Center(
+                child: Text('Loading...'),
+              );
+            }
+
+            int completedPercentage = result
+                .data?['getPacientCurrentActivityStats']['completedPercentage'];
+
+            String activity =
+                result.data?['getPacientCurrentActivityStats']['type'];
+
+            String? dateString =
+                result.data?['getPacientCurrentActivityStats']['endDate'];
+            DateTime? endDate =
+                dateString == null ? null : DateTime.parse(dateString);
+
+            int activitiesCount =
+                result.data?['getPacientActivitiesByDate'] == null
+                    ? 0
+                    : result.data?['getPacientActivitiesByDate'].length;
+
+            return SizedBox(
+                width: double.infinity,
+                height: double.infinity,
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     Container(
-                      padding: const EdgeInsets.all(15),
-                      height: 290,
-                      child: TableCalendar(
-                        rowHeight: 30,
-                        calendarStyle: CalendarStyle(
-                          holidayTextStyle:
-                              const TextStyle(color: Colors.white),
-                          weekendTextStyle:
-                              const TextStyle(color: Colors.white),
-                          weekNumberTextStyle:
-                              const TextStyle(color: Colors.white),
-                          defaultTextStyle:
-                              const TextStyle(color: Colors.white),
-                          selectedTextStyle:
-                              const TextStyle(color: Colors.white30),
-                          todayTextStyle:
-                              TextStyle(backgroundColor: Colors.blue[100]),
+                      height: 316,
+                      width: MediaQuery.of(context).size.width,
+                      decoration: const BoxDecoration(
+                        color: Color.fromARGB(255, 62, 130, 238),
+                        borderRadius: BorderRadius.only(
+                          bottomLeft: Radius.circular(20.0),
+                          bottomRight: Radius.circular(20.0),
                         ),
-                        focusedDay: today,
-                        firstDay: DateTime.utc(2010, 1, 1),
-                        lastDay: DateTime.utc(2050, 12, 31),
+                      ),
+                      child: Column(
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.all(15),
+                            height: 316,
+                            child: TableCalendar(
+                              rowHeight: 34,
+                              locale: "en_US",
+                              focusedDay: _focusedDay,
+                              selectedDayPredicate: (day) {
+                                return isSameDay(day, _selectedDay);
+                              },
+                              onDaySelected: (selectedDay, focusedDay) {
+                                _onDaySelected(selectedDay, focusedDay);
+                              },
+                              headerStyle: const HeaderStyle(
+                                  formatButtonVisible: false,
+                                  titleCentered: true,
+                                  leftChevronIcon: Icon(
+                                    Icons.chevron_left,
+                                    color: Colors.white,
+                                  ),
+                                  rightChevronIcon: Icon(
+                                    Icons.chevron_right,
+                                    color: Colors.white,
+                                  ),
+                                  titleTextStyle:
+                                      TextStyle(color: Colors.white)),
+                              calendarStyle: const CalendarStyle(
+                                  todayTextStyle:
+                                      TextStyle(color: Colors.white),
+                                  outsideTextStyle:
+                                      TextStyle(color: Colors.white54),
+                                  defaultTextStyle:
+                                      TextStyle(color: Colors.white)),
+                              daysOfWeekStyle: const DaysOfWeekStyle(
+                                  weekdayStyle:
+                                      TextStyle(color: Colors.white54),
+                                  weekendStyle:
+                                      TextStyle(color: Colors.white54)),
+                              firstDay: DateTime.utc(today.year, 1, 1),
+                              lastDay: DateTime.utc(today.year, 12, 31),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                  ],
-                ),
-              ),
-            ),
-            Row(
-              children: [
-                const SizedBox(
-                  width: 12,
-                ),
-                Container(
-                  // Pulse
-                  padding: const EdgeInsets.all(15),
-                  child: const Text(
-                    'Pulse',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 20,
-                    ),
-                  ),
-                ),
-                const SizedBox(
-                  width: 210,
-                ),
-                Container(
-                    height: 25,
-                    width: 80,
-                    decoration: BoxDecoration(
-                      color: const Color.fromARGB(255, 62, 130, 238),
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: const Center(
+                    Padding(
+                      padding:
+                          const EdgeInsets.only(left: 16, right: 16, top: 8),
                       child: Text(
-                        'Today',
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: Colors.white,
-                        ),
-                      ),
-                    )),
-              ],
-            ),
-            Container(
-              height: 130,
-              width: 200,
-              decoration: BoxDecoration(
-                color: Colors.transparent,
-                borderRadius: BorderRadius.circular(20),
-              ),
-              child: BpmChart(
-                data: chartData,
-                pulse: currentPulse,
-              ),
-            ),
-            const SizedBox(height: 9),
-            Row(
-              children: [
-                const SizedBox(
-                  width: 20,
-                ),
-                Container(
-                  padding: const EdgeInsets.all(20),
-                  height: 200,
-                  width: 110,
-                  decoration: BoxDecoration(
-                    color: const Color.fromARGB(255, 251, 78, 66),
-                    borderRadius: BorderRadius.circular(20),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.5),
-                        spreadRadius: 2,
-                        blurRadius: 5,
-                        offset: const Offset(0, 3),
-                      )
-                    ],
-                  ),
-                  child: Column(
-                    // heart rate container
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Icon(
-                        FontAwesomeIcons.heartPulse,
-                        color: Colors.white,
-                      ),
-                      const SizedBox(
-                        height: 15,
-                      ),
-                      Container(
-                        alignment: Alignment.topLeft,
-                        child: const Text(
-                          'Heart rate',
-                          style: TextStyle(color: Colors.white, fontSize: 10),
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 40,
-                      ),
-                      Text(
-                        currentBPM.toStringAsFixed(1),
+                        'You have $activitiesCount activities recommended by your doctor to do on the selected day.',
                         style: const TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 20),
+                            fontWeight: FontWeight.normal,
+                            fontSize: 14,
+                            color: Color.fromRGBO(6, 40, 96, 1)),
                       ),
-                      const Text(
-                        'BPM',
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 20),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(
-                  width: 20,
-                ),
-                Container(
-                  // Tempereature container
-                  padding: const EdgeInsets.all(20),
-                  height: 200,
-                  width: 110,
-                  decoration: BoxDecoration(
-                    color: const Color.fromARGB(255, 62, 130, 238),
-                    borderRadius: BorderRadius.circular(20),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.5),
-                        spreadRadius: 2,
-                        blurRadius: 5,
-                        offset: const Offset(0, 3),
-                      )
-                    ],
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Icon(
-                        FontAwesomeIcons.temperatureHalf,
-                        color: Colors.white,
-                      ),
-                      const SizedBox(
-                        height: 15,
-                      ),
-                      Container(
-                        alignment: Alignment.topLeft,
-                        child: const Text(
-                          'Temperature',
-                          style: TextStyle(color: Colors.white, fontSize: 10),
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 40,
-                      ),
-                      Text(
-                        currentTemperature.toStringAsFixed(1),
-                        style: const TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 20),
-                      ),
-                      const Text(
-                        '°C',
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 20),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(
-                  width: 20,
-                ),
-                Container(
-                  // Humidity container
-                  padding: const EdgeInsets.all(20),
-                  height: 200,
-                  width: 110,
-                  decoration: BoxDecoration(
-                    color: const Color.fromARGB(255, 26, 54, 102),
-                    borderRadius: BorderRadius.circular(20),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.5),
-                        spreadRadius: 2,
-                        blurRadius: 5,
-                        offset: const Offset(0, 3),
-                      )
-                    ],
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Icon(
-                        FontAwesomeIcons.droplet,
-                        color: Colors.white,
-                      ),
-                      const SizedBox(
-                        height: 15,
-                      ),
-                      Container(
-                        alignment: Alignment.topLeft,
-                        child: const Text(
-                          'Humidity',
-                          style: TextStyle(color: Colors.white, fontSize: 10),
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 40,
-                      ),
-                      Text(
-                        currentHumidity.toStringAsFixed(1),
-                        style: const TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 20),
-                      ),
-                      const Text(
-                        '%',
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 20),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(
-              height: 9,
-            ),
-            Container(
-              // padding: EdgeInsets.all(3),
-              height: 80,
-              width: 300,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(20),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.grey.withOpacity(0.5),
-                    spreadRadius: 2,
-                    blurRadius: 5,
-                    offset: const Offset(0, 3),
-                  )
-                ],
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const SizedBox(
-                        width: 13,
-                      ),
-                      Text(
-                        activityType.toString(),
-                        style: const TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 15),
-                      ),
-                      const SizedBox(
-                        width: 135,
-                      ),
-                      const Text(
-                        'Due ',
-                        style: TextStyle(fontSize: 13),
-                      ),
-                      Text(
-                        DateFormat('dd MMM, yyyy hh:mm a')
-                            .format(today), // data cand trebuie facut exercitiu
-                        style: const TextStyle(fontSize: 13),
-                      ),
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      const SizedBox(
-                        width: 13,
-                      ),
-                      Text(
-                        percentage.toString(),
-                        style: const TextStyle(fontSize: 12),
-                      ),
-                      const Text(
-                        '% completed',
-                        style: TextStyle(fontSize: 12),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(
-                    height: 7,
-                  ),
-                  Container(
-                    width: 350,
-                    height: 15,
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Colors.transparent),
-                      borderRadius: BorderRadius.circular(10),
                     ),
-                    child: Stack(
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        // Background of the progress bar
                         Container(
-                          width: 350, // Same as the width of the container
-                          height: 15, // Same as the height of the container
-                          decoration: BoxDecoration(
-                            color: Colors.grey[300], // Color of the background
-                            borderRadius:
-                                BorderRadius.circular(10), // Rounded corners
+                          padding: const EdgeInsets.only(
+                              left: 16, top: 16, bottom: 8),
+                          child: Text(
+                            helpers.selectedDataToPreview(_selectedIndex),
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 20,
+                            ),
                           ),
                         ),
-                        // Foreground of the progress bar (filling up based on percentage)
                         Container(
-                          width: percentage * 3.5, // Width based on percentage
-                          height: 15, // Same as the height of the container
-                          // Duration of animation
-                          decoration: BoxDecoration(
-                            color: Colors.blue, // Color of the progress
-                            borderRadius:
-                                BorderRadius.circular(10), // Rounded corners
-                          ),
+                          padding: const EdgeInsets.only(
+                              right: 16, top: 16, bottom: 8),
+                          child: Container(
+                              width: 96,
+                              height: 24,
+                              decoration: BoxDecoration(
+                                color: const Color.fromARGB(255, 62, 130, 238),
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              child: Center(
+                                child: Text(
+                                  DateFormat('dd MMM').format(_selectedDay),
+                                  style: const TextStyle(
+                                    fontSize: 14,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              )),
                         ),
                       ],
                     ),
-                  ),
-                ],
-              ),
-            )
-          ],
-        ));
+                    Container(
+                      height: 130,
+                      width: 200,
+                      decoration: BoxDecoration(
+                        color: Colors.transparent,
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: lastReadBpmData.isEmpty ||
+                              lastReadTemperatureData.isEmpty ||
+                              lastReadHumidityData.isEmpty
+                          ? const Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 16),
+                              child: Text(
+                                "No data.",
+                                style: TextStyle(
+                                    color: Colors.black45,
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                            )
+                          : Chart(
+                              data: chartData,
+                            ),
+                    ),
+                    const SizedBox(height: 9),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          SizedBox(
+                            width: 124,
+                            height: 130,
+                            child: GestureDetector(
+                              onTap: () {
+                                changeCard(0);
+                              },
+                              child: Card(
+                                elevation: 4,
+                                color: _selectedIndex == 0
+                                    ? const Color.fromARGB(255, 251, 78, 66)
+                                    : Colors.grey,
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    const Icon(
+                                      FontAwesomeIcons.heartPulse,
+                                      color: Colors.white,
+                                    ),
+                                    const SizedBox(
+                                      height: 8,
+                                    ),
+                                    Container(
+                                      alignment: Alignment.center,
+                                      child: const Text(
+                                        'Heart rate',
+                                        style: TextStyle(
+                                            color: Colors.white, fontSize: 12),
+                                      ),
+                                    ),
+                                    const SizedBox(
+                                      height: 24,
+                                    ),
+                                    Text(
+                                      currentBpm.toString(),
+                                      style: const TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 18),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            width: 124,
+                            height: 130,
+                            child: GestureDetector(
+                              onTap: () {
+                                changeCard(1);
+                              },
+                              child: Card(
+                                elevation: 4,
+                                color: _selectedIndex == 1
+                                    ? const Color.fromARGB(255, 62, 130, 238)
+                                    : Colors.grey,
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    const Icon(
+                                      FontAwesomeIcons.temperatureHalf,
+                                      color: Colors.white,
+                                    ),
+                                    const SizedBox(
+                                      height: 8,
+                                    ),
+                                    Container(
+                                      alignment: Alignment.center,
+                                      child: const Text(
+                                        'Temperature',
+                                        style: TextStyle(
+                                            color: Colors.white, fontSize: 12),
+                                      ),
+                                    ),
+                                    const SizedBox(
+                                      height: 24,
+                                    ),
+                                    Text(
+                                      currentTemperature.toString(),
+                                      style: const TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 18),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            width: 124,
+                            height: 130,
+                            child: GestureDetector(
+                              onTap: () {
+                                changeCard(2);
+                              },
+                              child: Card(
+                                elevation: 4,
+                                color: _selectedIndex == 2
+                                    ? const Color.fromARGB(255, 26, 54, 102)
+                                    : Colors.grey,
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    const Icon(
+                                      FontAwesomeIcons.droplet,
+                                      color: Colors.white,
+                                    ),
+                                    const SizedBox(
+                                      height: 8,
+                                    ),
+                                    Container(
+                                      alignment: Alignment.center,
+                                      child: const Text(
+                                        'Humidity',
+                                        style: TextStyle(
+                                            color: Colors.white, fontSize: 12),
+                                      ),
+                                    ),
+                                    const SizedBox(
+                                      height: 24,
+                                    ),
+                                    Text(
+                                      currentHumidity.toString(),
+                                      style: const TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 18),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 9,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 14),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 14, vertical: 8),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(20),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.withOpacity(0.5),
+                              spreadRadius: 2,
+                              blurRadius: 5,
+                              offset: const Offset(0, 3),
+                            )
+                          ],
+                        ),
+                        child: endDate != null
+                            ? Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        activity,
+                                        style: const TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 15),
+                                      ),
+                                      Text(
+                                        'Due ${DateFormat('dd MMM, yyyy').format(endDate)}',
+                                        style: const TextStyle(fontSize: 13),
+                                      ),
+                                    ],
+                                  ),
+                                  Text(
+                                    '${completedPercentage.toString()} % completed',
+                                    style: const TextStyle(fontSize: 12),
+                                  ),
+                                  const SizedBox(
+                                    height: 7,
+                                  ),
+                                  Container(
+                                    width: double.infinity,
+                                    height: 15,
+                                    decoration: BoxDecoration(
+                                      border:
+                                          Border.all(color: Colors.transparent),
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    child: Stack(
+                                      children: [
+                                        // Background of the progress bar
+                                        Container(
+                                          width: double.infinity,
+                                          height: 15,
+                                          decoration: BoxDecoration(
+                                            color: Colors.grey[300],
+                                            borderRadius:
+                                                BorderRadius.circular(10),
+                                          ),
+                                        ),
+                                        // Foreground of the progress bar
+                                        FractionallySizedBox(
+                                          widthFactor:
+                                              completedPercentage / 100,
+                                          child: Container(
+                                            decoration: BoxDecoration(
+                                              color: Colors.blue,
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              )
+                            : Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        activity,
+                                        style: const TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 15),
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(
+                                    height: 8,
+                                  ),
+                                  const Text(
+                                    'There are is no set target from your doctor for this activity.',
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.normal,
+                                        fontSize: 14,
+                                        color: Colors.grey),
+                                  ),
+                                ],
+                              ),
+                      ),
+                    ),
+                  ],
+                ));
+          },
+        );
+      },
+    );
   }
 }

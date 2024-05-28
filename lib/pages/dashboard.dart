@@ -5,10 +5,11 @@ import 'package:healthguard_mobile/components/dashboard_calendar.dart';
 import 'package:healthguard_mobile/components/dashboard_home.dart';
 import 'package:healthguard_mobile/components/dashboard_settings.dart';
 import 'package:healthguard_mobile/components/dashboard_stats.dart';
-import 'package:healthguard_mobile/utils/auth.dart' as auth;
 
 class Dashboard extends StatefulWidget {
-  const Dashboard({super.key});
+  const Dashboard({super.key, required this.userToken});
+
+  final String userToken;
 
   @override
   State<Dashboard> createState() => _DashboardNavigationBarState();
@@ -17,22 +18,16 @@ class Dashboard extends StatefulWidget {
 class _DashboardNavigationBarState extends State<Dashboard> {
   int _selectedIndex = 0;
 
-  final List<Widget> _widgetOptions = <Widget>[
-    const DashboardHome(),
-    const DashboardCalendar(),
-    const DashboardStats(),
-    const DashboardActivities(),
-    const DashboardAlerts(),
-    const DashboardSettings()
-  ];
-
   @override
   Widget build(BuildContext context) {
-    auth.isAuthenticated().then((isAuthenticated) {
-      if (!isAuthenticated) {
-        Navigator.pushReplacementNamed(context, '/login');
-      }
-    });
+    final List<Widget> widgetOptions = <Widget>[
+      DashboardHome(userToken: widget.userToken),
+      DashboardCalendar(userToken: widget.userToken),
+      DashboardStats(userToken: widget.userToken),
+      DashboardActivities(userToken: widget.userToken),
+      DashboardAlerts(userToken: widget.userToken),
+      DashboardSettings(userToken: widget.userToken)
+    ];
 
     return SafeArea(
       child: PopScope(
@@ -44,7 +39,7 @@ class _DashboardNavigationBarState extends State<Dashboard> {
               decoration: const BoxDecoration(
                 color: Colors.white70,
               ),
-              child: _widgetOptions[_selectedIndex]),
+              child: widgetOptions[_selectedIndex]),
           bottomNavigationBar: BottomNavigationBar(
             type: BottomNavigationBarType.shifting,
             backgroundColor: Colors.white,

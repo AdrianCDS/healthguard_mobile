@@ -46,6 +46,8 @@ dependencies:
   go_router: ^14.1.2
 
 dev_dependencies:
+  flutter_launcher_icons: "^0.13.1"
+
   flutter_test:
     sdk: flutter
 
@@ -58,6 +60,12 @@ dev_dependencies:
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
+
+flutter_launcher_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "images/play_store_512.png"
+  min_sdk_android: 21
 
 # The folslowing section is specific to Flutter packages.
 flutter:

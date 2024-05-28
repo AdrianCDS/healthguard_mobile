@@ -10,5 +10,6 @@ ValueNotifier<GraphQLClient> getClient() {
 
   final Link link = authLink.concat(httpLink);
 
-  return ValueNotifier(GraphQLClient(link: link, cache: GraphQLCache()));
+  return ValueNotifier(
+      GraphQLClient(link: link, cache: GraphQLCache(store: InMemoryStore())));
 }

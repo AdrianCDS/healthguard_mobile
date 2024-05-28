@@ -8,7 +8,6 @@ import 'package:healthguard_mobile/pages/register.dart';
 import 'package:healthguard_mobile/api/graphql_client.dart' as graphql_client;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter/foundation.dart';
-// import 'package:healthguard_mobile/utils/auth.dart' as auth;
 
 void main() async {
   if (kReleaseMode) {
@@ -35,42 +34,30 @@ class MyApp extends StatelessWidget {
   }
 }
 
-final GoRouter _router = GoRouter(
-    initialLocation: "/home",
-    // redirect: (context, state) {
-    //   auth.isAuthenticated().then((isAuthenticated) {
-    //     if (isAuthenticated) {
-    //       return "/dashboard";
-    //     } else {
-    //       return "/home";
-    //     }
-    //   });
-
-    //   return null;
-    // },
-    routes: <RouteBase>[
-      GoRoute(
-          name: "/home",
-          path: "/home",
-          builder: (context, state) {
-            return const Homepage();
-          }),
-      GoRoute(
-          name: "/register",
-          path: "/register",
-          builder: (context, state) {
-            return const Register();
-          }),
-      GoRoute(
-          name: "/login",
-          path: "/login",
-          builder: (context, state) {
-            return const Login();
-          }),
-      GoRoute(
-          name: "/dashboard",
-          path: "/dashboard",
-          builder: (context, state) {
-            return const Dashboard();
-          }),
-    ]);
+final GoRouter _router = GoRouter(initialLocation: "/home", routes: <RouteBase>[
+  GoRoute(
+      name: "/home",
+      path: "/home",
+      builder: (context, state) {
+        return const Homepage();
+      }),
+  GoRoute(
+      name: "/register",
+      path: "/register",
+      builder: (context, state) {
+        return const Register();
+      }),
+  GoRoute(
+      name: "/login",
+      path: "/login",
+      builder: (context, state) {
+        return const Login();
+      }),
+  GoRoute(
+      name: "/dashboard",
+      path: "/dashboard/:token",
+      builder: (context, state) {
+        String token = state.pathParameters["token"]!;
+        return Dashboard(userToken: token);
+      }),
+]);

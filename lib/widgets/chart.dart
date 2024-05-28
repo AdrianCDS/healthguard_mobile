@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
 
-class BpmChart extends StatelessWidget {
-  const BpmChart({super.key, required this.pulse, required this.data});
+class Chart extends StatelessWidget {
+  const Chart({super.key, required this.data});
 
-  final double pulse; // Pulse value from 0 to 250
   final List<double> data;
 
   @override
   Widget build(BuildContext context) {
-    double averageBPM = calculateAverage(data);
+    double average = calculateAverage(data);
+    double max = calculateMax(data);
+
     return Container(
-      height: MediaQuery.of(context).size.height, // Adjust height as needed
+      height: MediaQuery.of(context).size.height,
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(20.0),
@@ -19,7 +20,7 @@ class BpmChart extends StatelessWidget {
             color: Colors.grey.withOpacity(0.5),
             spreadRadius: 2,
             blurRadius: 5,
-            offset: const Offset(0, 3), // changes position of shadow
+            offset: const Offset(0, 3),
           ),
         ],
       ),
@@ -29,9 +30,9 @@ class BpmChart extends StatelessWidget {
         children: [
           Container(
             alignment: Alignment.topLeft,
-            child: const Text(
-              '   250 BPM',
-              style: TextStyle(
+            child: Text(
+              max.toString(),
+              style: const TextStyle(
                 color: Colors.black,
                 fontSize: 10,
               ),
@@ -44,14 +45,14 @@ class BpmChart extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 10),
               child: CustomPaint(
                 size: const Size(double.infinity, double.infinity),
-                painter: ChartPainter(data: data, pulse: pulse),
+                painter: ChartPainter(data: data, max: max),
               ),
             ),
           ),
           Container(
             alignment: Alignment.topRight,
             child: const Text(
-              '1 day',
+              'Now',
               style: TextStyle(
                 color: Colors.black,
                 fontSize: 10,
@@ -65,7 +66,7 @@ class BpmChart extends StatelessWidget {
                 child: const Text('Average:'),
               ),
               Text(
-                averageBPM.toStringAsFixed(1),
+                average.toStringAsFixed(1),
                 style: const TextStyle(fontWeight: FontWeight.bold),
               ),
             ],
@@ -77,22 +78,27 @@ class BpmChart extends StatelessWidget {
 
   double calculateAverage(List<double> data) {
     if (data.isEmpty) return 0.0;
+
     double sum = 0.0;
+
     for (var value in data) {
       sum += value;
     }
     return sum / data.length;
   }
+
+  double calculateMax(List<double> data) {
+    return data.reduce((curr, next) => curr > next ? curr : next);
+  }
 }
 
 class ChartPainter extends CustomPainter {
-  final List<double> data;
-  final double pulse;
+  ChartPainter({required this.data, required this.max});
 
-  ChartPainter({required this.data, required this.pulse});
+  final List<double> data;
+  final double max;
 
   @override
-  // double avg_bpm = 0;
   void paint(Canvas canvas, Size size) {
     final Paint linePaint = Paint()
       ..color = Colors.red
@@ -107,21 +113,19 @@ class ChartPainter extends CustomPainter {
       ..strokeWidth = 4.0
       ..strokeCap = StrokeCap.round;
 
-    // Drawing the chart line
     Path path = Path();
     path.moveTo(0, chartHeight);
     final double dataStep = chartWidth / (data.length - 1);
     for (int i = 0; i < data.length; i++) {
       double x = i * dataStep;
-      double y = chartHeight - (data[i] / 250) * chartHeight;
+      double y = chartHeight - (data[i] / max) * chartHeight;
       path.lineTo(x, y);
     }
     canvas.drawPath(path, linePaint);
 
-    canvas.drawLine(Offset(0, chartHeight), const Offset(0, 0),
-        charlinesPain); // Left vertical line
-    canvas.drawLine(Offset(0, chartHeight), Offset(chartWidth, chartHeight),
-        charlinesPain); // Bottom horizontal line
+    canvas.drawLine(Offset(0, chartHeight), const Offset(0, 0), charlinesPain);
+    canvas.drawLine(
+        Offset(0, chartHeight), Offset(chartWidth, chartHeight), charlinesPain);
   }
 
   @override
