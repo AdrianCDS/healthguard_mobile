@@ -80,7 +80,7 @@ class _DashboardCalendarState extends State<DashboardCalendar> {
 
         List? activityData = result.data?['getPacientActivitiesByDate'];
         String? currentActivity = result.data?['getUserByToken']
-            ['pacientProfile']['activityType']['type'];
+            ['pacientProfile']['activityType']?['type'];
 
         if (activityData == null || currentActivity == null) {
           return const Center(

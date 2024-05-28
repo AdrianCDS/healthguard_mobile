@@ -54,7 +54,7 @@ class _RegisterState extends State<Register> {
               ));
 
       if (result.hasException) {
-        errorMessage = result.toString();
+        errorMessage = "GraphQL RESULT EXCEPTION: ${result.toString()}";
       } else {
         final token = result.data!["registerPacient"]["token"];
 
@@ -66,7 +66,7 @@ class _RegisterState extends State<Register> {
         }
       }
     } catch (e) {
-      errorMessage = e.toString();
+      errorMessage = "GraphQL QUERY EXCEPTION: ${e.toString()}";
     } finally {
       setState(() {
         isLoading = false;

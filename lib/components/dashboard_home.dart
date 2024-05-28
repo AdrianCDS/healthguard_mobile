@@ -62,11 +62,11 @@ class _DashboardHomeState extends State<DashboardHome> {
         }
 
         List? lastReadBpmData =
-            result.data?['getPacientSensorDataByDatetime']['bpm'];
+            result.data?['getPacientSensorDataByDatetime']?['bpm'];
         List? lastReadTemperatureData =
-            result.data?['getPacientSensorDataByDatetime']['temperature'];
+            result.data?['getPacientSensorDataByDatetime']?['temperature'];
         List? lastReadHumidityData =
-            result.data?['getPacientSensorDataByDatetime']['humidity'];
+            result.data?['getPacientSensorDataByDatetime']?['humidity'];
 
         if (lastReadBpmData == null ||
             lastReadTemperatureData == null ||

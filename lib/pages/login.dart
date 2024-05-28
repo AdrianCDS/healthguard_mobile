@@ -44,7 +44,7 @@ class _LoginState extends State<Login> {
               ));
 
       if (result.hasException) {
-        errorMessage = "Invalid email/password.";
+        errorMessage = "GraphQL RESULT EXCEPTION: ${result.toString()}";
       } else {
         final token = result.data!["loginUser"]["token"];
 
@@ -56,7 +56,7 @@ class _LoginState extends State<Login> {
         }
       }
     } catch (e) {
-      errorMessage = e.toString();
+      errorMessage = "GraphQL QUERY EXCEPTION: ${e.toString()}";
     } finally {
       setState(() {
         isLoading = false;
