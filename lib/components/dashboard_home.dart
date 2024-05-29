@@ -135,7 +135,7 @@ class _DashboardHomeState extends State<DashboardHome> {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     Container(
-                      height: 316,
+                      height: 310,
                       width: MediaQuery.of(context).size.width,
                       decoration: const BoxDecoration(
                         color: Color.fromARGB(255, 62, 130, 238),
@@ -148,9 +148,9 @@ class _DashboardHomeState extends State<DashboardHome> {
                         children: [
                           Container(
                             padding: const EdgeInsets.all(15),
-                            height: 316,
+                            height: 310,
                             child: TableCalendar(
-                              rowHeight: 34,
+                              rowHeight: 30,
                               locale: "en_US",
                               focusedDay: _focusedDay,
                               selectedDayPredicate: (day) {
@@ -193,7 +193,7 @@ class _DashboardHomeState extends State<DashboardHome> {
                     ),
                     Padding(
                       padding:
-                          const EdgeInsets.only(left: 16, right: 16, top: 8),
+                          const EdgeInsets.only(left: 16, right: 16, top: 4),
                       child: Text(
                         'You have $activitiesCount activities recommended by your doctor to do on the selected day.',
                         style: const TextStyle(
@@ -207,7 +207,7 @@ class _DashboardHomeState extends State<DashboardHome> {
                       children: [
                         Container(
                           padding: const EdgeInsets.only(
-                              left: 16, top: 16, bottom: 8),
+                              left: 16, top: 10, bottom: 8),
                           child: Text(
                             helpers.selectedDataToPreview(_selectedIndex),
                             style: const TextStyle(
@@ -253,12 +253,12 @@ class _DashboardHomeState extends State<DashboardHome> {
                         )),
                     const SizedBox(height: 9),
                     Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      padding: const EdgeInsets.symmetric(horizontal: 24),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           SizedBox(
-                            width: 124,
+                            width: 116,
                             height: 130,
                             child: GestureDetector(
                               onTap: () {
@@ -304,7 +304,7 @@ class _DashboardHomeState extends State<DashboardHome> {
                             ),
                           ),
                           SizedBox(
-                            width: 124,
+                            width: 116,
                             height: 130,
                             child: GestureDetector(
                               onTap: () {
@@ -350,7 +350,7 @@ class _DashboardHomeState extends State<DashboardHome> {
                             ),
                           ),
                           SizedBox(
-                            width: 124,
+                            width: 116,
                             height: 130,
                             child: GestureDetector(
                               onTap: () {

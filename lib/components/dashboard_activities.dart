@@ -48,18 +48,6 @@ class _DashboardActivitiesState extends State<DashboardActivities> {
           );
         }
 
-        if (recommendations.isEmpty) {
-          return const Center(
-            child: Text(
-              "No recommendations found.",
-              style: TextStyle(
-                  color: Colors.black45,
-                  fontSize: 14,
-                  fontWeight: FontWeight.bold),
-            ),
-          );
-        }
-
         return SizedBox(
           width: double.infinity,
           height: double.infinity,
@@ -77,30 +65,42 @@ class _DashboardActivitiesState extends State<DashboardActivities> {
                 ),
               ),
               const SizedBox(height: 8),
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.only(left: 28, right: 28),
-                  child: ListView.builder(
-                      itemCount: recommendations.length,
-                      itemBuilder: (context, index) {
-                        final recommendation = recommendations[index];
+              recommendations.isNotEmpty
+                  ? Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 28, right: 28),
+                        child: ListView.builder(
+                            itemCount: recommendations.length,
+                            itemBuilder: (context, index) {
+                              final recommendation = recommendations[index];
 
-                        String notes = recommendation['recommandation'];
-                        String activity = recommendation['activityType'] != null
-                            ? recommendation['activityType']['type']
-                            : "Unspecified";
-                        String startDate = recommendation['startDate'];
-                        int daysDuration = recommendation['daysDuration'];
+                              String notes = recommendation['recommandation'];
+                              String activity =
+                                  recommendation['activityType'] != null
+                                      ? recommendation['activityType']['type']
+                                      : "Unspecified";
+                              String startDate = recommendation['startDate'];
+                              int daysDuration = recommendation['daysDuration'];
 
-                        return RecommendationCard(
-                          activity: activity,
-                          notes: notes,
-                          startDate: startDate,
-                          daysDuration: daysDuration,
-                        );
-                      }),
-                ),
-              ),
+                              return RecommendationCard(
+                                activity: activity,
+                                notes: notes,
+                                startDate: startDate,
+                                daysDuration: daysDuration,
+                              );
+                            }),
+                      ),
+                    )
+                  : const Padding(
+                      padding: EdgeInsets.only(left: 28, right: 28),
+                      child: Text(
+                        "No recommendations found.",
+                        style: TextStyle(
+                            color: Colors.black45,
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold),
+                      ),
+                    ),
             ],
           ),
         );
