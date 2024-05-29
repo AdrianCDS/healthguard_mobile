@@ -37,30 +37,6 @@ class _DashboardAlertsState extends State<DashboardAlerts> {
         List? alerts = result.data?['getPacientByToken']['pacientProfile']
             ['healthWarnings'];
 
-        if (alerts == null) {
-          return const Center(
-            child: Text(
-              "Couldn't read alerts.",
-              style: TextStyle(
-                  color: Colors.black45,
-                  fontSize: 14,
-                  fontWeight: FontWeight.bold),
-            ),
-          );
-        }
-
-        if (alerts.isEmpty) {
-          return const Center(
-            child: Text(
-              "No alerts found.",
-              style: TextStyle(
-                  color: Colors.black45,
-                  fontSize: 14,
-                  fontWeight: FontWeight.bold),
-            ),
-          );
-        }
-
         return Query(
           options: QueryOptions(
               document: gql(users.getUserLastReadData()),
@@ -80,18 +56,6 @@ class _DashboardAlertsState extends State<DashboardAlerts> {
 
             List? lastReadData =
                 result.data?['getPacientLastReadSensorDataByToken'];
-
-            if (lastReadData == null) {
-              return const Center(
-                child: Text(
-                  "No wearable data found.",
-                  style: TextStyle(
-                      color: Colors.black45,
-                      fontSize: 14,
-                      fontWeight: FontWeight.bold),
-                ),
-              );
-            }
 
             return SizedBox(
               width: double.infinity,
@@ -113,38 +77,60 @@ class _DashboardAlertsState extends State<DashboardAlerts> {
                   Expanded(
                     child: Padding(
                       padding: const EdgeInsets.only(left: 28, right: 28),
-                      child: ListView.builder(
-                          itemCount: alerts.length,
-                          itemBuilder: (context, index) {
-                            final alert = alerts[index];
+                      child: helpers.isListAvailable(alerts)
+                          ? ListView.builder(
+                              itemCount: alerts?.length,
+                              itemBuilder: (context, index) {
+                                final alert = alerts?[index];
 
-                            String alertType = alert['type'];
-                            DateTime triggeredDate =
-                                alert['triggeredDate'] == null
-                                    ? DateTime.now()
-                                    : DateTime.parse(alert['triggeredDate']);
-                            var minValue = alert['minValue'];
-                            var maxValue = alert['maxValue'];
-                            String activity = alert['activityType']['type'];
-                            bool triggered = alert['triggered'];
+                                String alertType = alert['type'];
+                                DateTime triggeredDate =
+                                    alert['triggeredDate'] == null
+                                        ? DateTime.now()
+                                        : DateTime.parse(
+                                            alert['triggeredDate']);
+                                var minValue = alert['minValue'];
+                                var maxValue = alert['maxValue'];
+                                String activity = alert['activityType']['type'];
+                                bool triggered = alert['triggered'];
 
-                            var dataValues = lastReadData.firstWhere(
-                                (element) =>
-                                    element['type'] == alertType)['value'];
+                                if (helpers.isListAvailable(lastReadData)) {
+                                  var dataValues = lastReadData?.firstWhere(
+                                      (element) =>
+                                          element['type'] ==
+                                          alertType)['value'];
 
-                            var currentValue =
-                                helpers.computeSensorData(dataValues);
+                                  var currentValue =
+                                      helpers.computeSensorData(dataValues);
 
-                            return AlertCard(
-                              alert: alertType,
-                              active: triggered,
-                              activity: activity,
-                              min: minValue,
-                              max: maxValue,
-                              val: currentValue,
-                              triggerDate: triggeredDate,
-                            );
-                          }),
+                                  return AlertCard(
+                                    alert: alertType,
+                                    active: triggered,
+                                    activity: activity,
+                                    min: minValue,
+                                    max: maxValue,
+                                    val: currentValue,
+                                    triggerDate: triggeredDate,
+                                  );
+                                } else {
+                                  return AlertCard(
+                                    alert: alertType,
+                                    active: triggered,
+                                    activity: activity,
+                                    min: minValue,
+                                    max: maxValue,
+                                    val: 0,
+                                    triggerDate: triggeredDate,
+                                  );
+                                }
+                              })
+                          : const Text(
+                              "No alerts found.",
+                              style: TextStyle(
+                                  color: Colors.black45,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.bold),
+                            ),
                     ),
                   ),
                 ],

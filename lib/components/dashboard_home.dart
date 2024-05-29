@@ -106,7 +106,7 @@ class _DashboardHomeState extends State<DashboardHome> {
 
             int completedPercentage =
                 result.data?['getPacientCurrentActivityStats'] == null
-                    ? 0
+                    ? 0.0
                     : result.data?['getPacientCurrentActivityStats']
                         ['completedPercentage'];
 
